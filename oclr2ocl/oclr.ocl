@@ -1,0 +1,684 @@
+--import 'platform:/resource/lu.svv.offline/model/oclr.ecore#/'
+--import 'platform:/resource/lu.svv.offline/model/trace.ecore#/'
+--import 'platform:/resource/lu.svv.offline/model/check.ecore#/'
+
+package check
+
+context Monitor
+
+def: nextFirstOccurrence(subtrace:OrderedSet(trace::TraceElement), eventName:String, indexBegin:Integer):trace::TraceElement = 
+--return the next first occurrence of the event 'eventName' in 'traceOrScope' from the index 'indexBegin'
+let eventTrace:OrderedSet(trace::TraceElement) = subtrace->select(elem | indexBegin <= elem.index and eventName = elem.event.name) in
+if eventTrace->isEmpty() then
+	null
+else
+	eventTrace->first()
+endif
+
+def: previousFirstOccurrence(subtrace:OrderedSet(trace::TraceElement), eventName:String, indexBegin:Integer):trace::TraceElement = 
+--return the previous first occurrence of the event 'eventName' in 'traceOrScope' before the index 'indexBegin'
+let eventTrace:OrderedSet(trace::TraceElement) = subtrace->select(elem | indexBegin >= elem.index and eventName = elem.event.name) in
+if eventTrace->isEmpty() then
+	null
+else
+	eventTrace->last()
+endif
+
+--------------------  Scopes  ----------------------
+
+def: ordinalIndexOf(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer):Integer =
+--find the index of the [n]th occurrence of the event 'eventName'
+let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | eventName = elem.event.name) in
+if eventTrace->isEmpty() or eventTrace->size() < n.abs() then
+  -1
+else
+  eventTrace->at(n.abs()).index
+endif
+
+def: ordinalIndexOf(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, indexBegin:Integer):Integer =
+--find the index of the [n]th occurrence of the event 'eventName'
+let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | indexBegin <= elem.index and eventName = elem.event.name) in
+if eventTrace->isEmpty() or eventTrace->size() < n then
+  -1
+else
+  eventTrace->at(n).index
+endif
+
+def: atLeastBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'before [n] eventName at least timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+  trace->select(elem | toTimeStamp - timeDistance >= elem.timestamp.quantity) 
+else
+  OrderedSet{}
+endif
+
+def: atMostBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'before [n] eventName at most timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+  trace->select(elem | toTimeStamp - timeDistance <= elem.timestamp.quantity and toTimeStamp >= elem.timestamp.quantity)
+else
+	OrderedSet{}
+endif
+
+def: exactlyBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'before [n] eventName exactly timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+  trace->select(elem | toTimeStamp - timeDistance = elem.timestamp.quantity)
+else
+  OrderedSet{}
+endif
+
+def: applyScopeBefore(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::TraceElement) =
+--return the scope of 'before boundary'
+--'boundary' : '[n] eventName [comparingOperator timeDistance tu]'
+let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
+if boundary.timeDistance->notEmpty() then
+	let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.quantity in
+	if boundary.ordinal->notEmpty() then
+		let n:Integer = boundary.ordinal in
+		if oclr::ComparingOperator::ATLEAST = comparingOperator then
+			self.atLeastBefore(trace.traceElements, eventName,n,timeDistance) 
+		else
+			if oclr::ComparingOperator::ATMOST = comparingOperator then
+				self.atMostBefore(trace.traceElements, eventName,n,timeDistance)
+			else
+				self.exactlyBefore(trace.traceElements, eventName,n,timeDistance)
+			endif
+		endif
+	else
+		if oclr::ComparingOperator::ATLEAST = comparingOperator then
+			self.atLeastBefore(trace.traceElements, eventName,1,timeDistance)
+		else
+			if oclr::ComparingOperator::ATMOST = comparingOperator then
+				self.atMostBefore(trace.traceElements, eventName,1,timeDistance)
+			else
+				self.exactlyBefore(trace.traceElements, eventName,1,timeDistance)
+			endif
+		endif
+	endif
+else
+	if boundary.ordinal->notEmpty() then
+		let n:Integer = boundary.ordinal in
+		self.atLeastBefore(trace.traceElements, eventName,n,1)
+	else
+		self.atLeastBefore(trace.traceElements, eventName,1,1)
+	endif
+endif
+
+def: atLeastAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'after [n] eventName at least timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+  let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+  trace->select(elem | fromTimeStamp + timeDistance <= elem.timestamp.quantity)
+else
+  OrderedSet{}
+endif
+
+def: atMostAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'after [n] eventName at most timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+	let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+	trace->select(elem | fromTimeStamp <= elem.timestamp.quantity and fromTimeStamp + timeDistance >= elem.timestamp.quantity)
+else
+	OrderedSet{}
+endif
+
+def: exactlyAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
+--return the scope of 'after [n] eventName exactly timeDistance tu'
+let position:Integer = ordinalIndexOf(trace, eventName, n) in
+if -1 <> position then
+  let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
+  trace->select(elem | fromTimeStamp + timeDistance = elem.timestamp.quantity)
+else
+  OrderedSet{}
+endif
+
+def: applyScopeAfter(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::TraceElement) =
+--return the scope of 'after boundary'
+--'boundary' : '[n] eventName [comparingOperator timeDistance tu]'
+let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
+if boundary.timeDistance->notEmpty() then
+	let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.quantity in
+	if boundary.ordinal->notEmpty() then
+			let n:Integer = boundary.ordinal in
+		if oclr::ComparingOperator::ATLEAST = comparingOperator then
+			self.atLeastAfter(trace.traceElements, eventName, n, timeDistance)
+		else if oclr::ComparingOperator::ATMOST = comparingOperator then
+				self.atMostAfter(trace.traceElements, eventName,n,timeDistance)
+			else 
+				self.exactlyAfter(trace.traceElements, eventName, n, timeDistance)
+			endif	
+		endif
+	else
+		if oclr::ComparingOperator::ATLEAST = comparingOperator then
+			self.atLeastAfter(trace.traceElements, eventName, 1,timeDistance)
+		else if oclr::ComparingOperator::ATMOST = comparingOperator then
+				self.atMostAfter(trace.traceElements, eventName, 1, timeDistance)
+			else 
+				self.exactlyAfter(trace.traceElements, eventName, 1, timeDistance)
+			endif	
+		endif			
+	endif
+else
+	if boundary.ordinal->notEmpty() then
+			let n:Integer = boundary.ordinal in
+		self.atLeastAfter(trace.traceElements, eventName, n, 1)    			
+		else	
+		self.atLeastAfter(trace.traceElements, eventName, 1, 1)
+	endif
+endif
+
+def: specialBetweenAnd(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, nBegin:Integer, timeDistanceBegin:Integer, eventNameEnd:String, nEnd:Integer, timeDistanceEnd:Integer):OrderedSet(trace::TraceElement) = 
+--return the scope of 'between nBegin eventNameBegin at least timeDistanceBegin tu and nBegin eventNameEnd at least timeDistanceEnd tu'
+let fromIndex:Integer = ordinalIndexOf(trace, eventNameBegin, nBegin), toIndex:Integer = ordinalIndexOf(trace, eventNameEnd, nEnd, fromIndex) in
+if -1 <> fromIndex and -1 <> toIndex then
+	let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity, toTimeStamp:Integer = trace->at(toIndex).timestamp.quantity in
+	trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= elem.timestamp.quantity)
+else
+	OrderedSet{}
+endif
+
+def: getBetweenAndBoundaries(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, eventNameEnd:String):OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) =
+--return the scope'indexBegin delimiters of 'between eventNameBegin and eventNameEnd'
+trace->iterate(elem:trace::TraceElement; list:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = OrderedSet{Tuple{fromEvent:trace::TraceElement = null, toEvent:trace::TraceElement = trace->first()}} | 
+  let position:Integer = list->last().toEvent.index in
+  if position = elem.index then
+    let begin:trace::TraceElement = self.nextFirstOccurrence(trace, eventNameBegin, position), end:trace::TraceElement = self.nextFirstOccurrence(trace, eventNameEnd, begin.index+1) in
+    if null <> begin and null <> end then
+      list->append(Tuple{fromEvent:trace::TraceElement = begin, toEvent:trace::TraceElement = end})
+    else
+      list
+    endif
+  else
+    list
+  endif
+)
+
+def: generalBetweenAnd(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, timeDistanceBegin:Integer, eventNameEnd:String, timeDistanceEnd:Integer):Sequence(OrderedSet(trace::TraceElement)) =
+--return the scope of 'between eventNameBegin at least timeDistanceBegin tu and eventNameEnd at least timeDistanceEnd tu'
+let boundaries:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.getBetweenAndBoundaries(trace, eventNameBegin, eventNameEnd) in
+boundaries->subOrderedSet(2, boundaries->size())->iterate(
+  elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement); result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{} |
+  let fromTimeStamp:Integer = elem.fromEvent.timestamp.quantity, toTimeStamp:Integer = elem.toEvent.timestamp.quantity in
+  result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.quantity))
+)
+
+def: applyScopeBetweenAnd(trace:trace::Trace, scope:oclr::Scope):Sequence(OrderedSet(trace::TraceElement)) = 
+--return the scope of 'between boundaryBegin and boundaryEnd'
+--i.e., 'between [nBegin] eventNameBegin [at least timeDistanceBegin] and [nEnd] eventNameEnd [at least timeDistanceEnd]'
+let boundaryBegin:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryBegin, boundaryEnd:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryEnd, eventNameBegin:String = boundaryBegin.event.name, eventNameEnd:String = boundaryEnd.event.name in
+if boundaryBegin.timeDistance->notEmpty() then
+  let timeDistanceBegin:Integer = boundaryBegin.timeDistance.quantity in 
+  if boundaryEnd.timeDistance->notEmpty() then
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+      let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
+      else
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, timeDistanceEnd))
+      endif
+    else
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
+      else
+        self.generalBetweenAnd(trace.traceElements, eventNameBegin, timeDistanceBegin, eventNameEnd, timeDistanceEnd)
+      endif
+    endif
+  else
+    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+      let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, 1))
+      else
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, 1))
+      endif
+    else
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, 1))
+      else
+        self.generalBetweenAnd(trace.traceElements, eventNameBegin, timeDistanceBegin, eventNameEnd, 1)
+      endif
+    endif
+  endif
+else
+  if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+      let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, timeDistanceEnd))
+      else
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, timeDistanceEnd))
+      endif
+    else
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, timeDistanceEnd))
+      else
+        self.generalBetweenAnd(trace.traceElements, eventNameBegin, 1, eventNameEnd, timeDistanceEnd)
+      endif
+    endif
+  else
+    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+      let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, 1))
+      else
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, 1))
+      endif
+    else
+      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+        let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
+        result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, 1))
+      else
+        self.generalBetweenAnd(trace.traceElements, eventNameBegin, 1, eventNameEnd, 1)
+      endif
+    endif
+  endif
+endif
+
+
+def: specialAfterUntil(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, nBegin:Integer, timeDistanceBegin:Integer, eventNameEnd:String, nEnd:Integer, timeDistanceEnd:Integer):OrderedSet(trace::TraceElement) = 
+--return the scope of 'after nBegin eventNameBegin at least timeDistanceBegin tu until nBegin eventNameEnd at least timeDistanceEnd tu'
+let fromIndex:Integer = self.ordinalIndexOf(trace, eventNameBegin, nBegin), toIndex:Integer = self.ordinalIndexOf(trace, eventNameEnd, nEnd, fromIndex) in
+if -1 <> fromIndex and -1 = toIndex then
+	let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity in
+	trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity)
+else
+	if -1 <> fromIndex and -1 <> toIndex then
+		let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity, toTimeStamp:Integer = trace->at(toIndex).timestamp.quantity in
+		trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= elem.timestamp.quantity)
+	else
+		OrderedSet{}
+	endif
+endif
+
+def: getAfterUntilBoundaries(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, eventNameEnd:String):OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) =
+--return the scope'indexBegin delimiters of 'between eventNameBegin and eventNameEnd'
+trace->iterate(
+	elem:trace::TraceElement; list:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = OrderedSet{Tuple{fromEvent:trace::TraceElement = null, toEvent:trace::TraceElement = trace->first()}} | 
+	let position:Integer = list->last().toEvent.index in
+	if position = elem.index then (
+		let begin:trace::TraceElement = self.nextFirstOccurrence(trace, eventNameBegin, position), end:trace::TraceElement = self.nextFirstOccurrence(trace, eventNameEnd, begin.index+1) in
+		if null <> begin and null = end then
+			list->append(Tuple{fromEvent:trace::TraceElement = begin, toEvent:trace::TraceElement = trace->last()})
+		else (
+			if null <> begin and null <> end then
+				list->append(Tuple{fromEvent:trace::TraceElement = begin, toEvent:trace::TraceElement = end})
+			else
+				list
+			endif
+		)
+		endif
+	)
+	else 
+		list 
+	endif
+)
+
+def: generalAfterUntil(trace:OrderedSet(trace::TraceElement), eventNameBegin:String, timeDistanceBegin:Integer, eventNameEnd:String, timeDistanceEnd:Integer):Sequence(OrderedSet(trace::TraceElement)) =
+--return the scope of 'after eventNameBegin at least timeDistanceBegin tu until eventNameEnd at least timeDistanceEnd tu'
+let boundaries:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.getAfterUntilBoundaries(trace, eventNameBegin, eventNameEnd) in
+boundaries->subOrderedSet(2, boundaries->size())->iterate(
+  elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement); result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{} |
+  let fromTimeStamp:Integer = elem.fromEvent.timestamp.quantity, toTimeStamp:Integer = elem.toEvent.timestamp.quantity in
+  if trace->size() = elem.toEvent.index and trace->last().event.name <> eventNameEnd then
+    result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity))
+  else
+  	result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.quantity))
+  endif
+)
+
+def: applyScopeAfterUntil(trace:trace::Trace, scope:oclr::Scope):Sequence(OrderedSet(trace::TraceElement)) = 
+--return the scope of 'after boundaryBegin until boundaryEnd'
+--i.e., 'after [nBegin] eventNameBegin [at least timeDistanceBegin] until [nEnd] eventNameEnd [at least timeDistanceEnd]'
+let boundaryBegin:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryBegin, boundaryEnd:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryEnd, eventNameBegin:String = boundaryBegin.event.name, eventNameEnd:String = boundaryEnd.event.name in
+if boundaryBegin.timeDistance->notEmpty() then
+	let timeDistanceBegin:Integer = boundaryBegin.timeDistance.quantity in
+	if boundaryEnd.timeDistance->notEmpty() then
+		let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+		if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nBegin:Integer = boundaryBegin.ordinal
+			in
+			if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+				let nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
+			else
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, timeDistanceEnd))
+			endif
+		else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
+			else
+				self.generalAfterUntil(trace.traceElements, eventNameBegin, timeDistanceBegin, eventNameEnd, timeDistanceEnd)
+			endif
+		endif
+	else if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nBegin:Integer = boundaryBegin.ordinal
+			in
+			if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+				let nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, 1))
+			else
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, 1))
+			endif
+		else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, 1))
+			else
+				self.generalAfterUntil(trace.traceElements, eventNameBegin, timeDistanceBegin, eventNameEnd, 1)
+			endif
+		endif
+	endif
+else if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
+		let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+		if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nBegin:Integer = boundaryBegin.ordinal
+			in
+			if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+				let nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, timeDistanceEnd))
+			else
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, timeDistanceEnd))
+			endif
+		else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, timeDistanceEnd))
+			else
+				self.generalAfterUntil(trace.traceElements, eventNameBegin, 1, eventNameEnd, timeDistanceEnd)
+			endif
+		endif
+	else if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nBegin:Integer = boundaryBegin.ordinal
+			in
+			if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+				let nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, 1))
+			else
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, 1))
+			endif
+		else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+			let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
+				nEnd:Integer = boundaryEnd.ordinal in
+				result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, 1))
+			else
+				self.generalAfterUntil(trace.traceElements, eventNameBegin, 1, eventNameEnd, 1)
+			endif
+		endif
+	endif
+endif
+
+def: applyScopeGlobally(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::TraceElement) = 
+trace.traceElements
+
+--------------------  Patterns  ----------------------
+
+def: findAllOccurrences(subtrace:OrderedSet(trace::TraceElement), eventName:String):OrderedSet(trace::TraceElement) = 
+--return all occurrences of the event 'eventName' in 'subtrace'
+subtrace->select(elem:trace::TraceElement | eventName = elem.event.name)
+
+def: nextFirstOccurrence(subtrace:OrderedSet(trace::TraceElement), chain:OrderedSet(oclr::EventChainElement), indicesOfFirst:OrderedSet(trace::TraceElement), indexBegin:Integer):Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = 
+--return the next first occurrence of 'chain' in 'subtrace' after the index 'indexBegin' with the help 'indicesOfFirst'
+if chain->size() = 1 then
+	let i:Integer = indicesOfFirst->iterate(elem:trace::TraceElement; i:Integer=0 | if elem.index < indexBegin then i+1 else i endif)
+	in
+	if i < indicesOfFirst->size() then
+		let event:trace::TraceElement = indicesOfFirst->at(i+1) in
+		Tuple{fromEvent:trace::TraceElement=event, toEvent:trace::TraceElement=event}
+	else
+		Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null}
+	endif
+else
+	indicesOfFirst->iterate(firstEvent:trace::TraceElement; result:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} | 
+		if indexBegin <= firstEvent.index and Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} = result
+		then 
+			(let matching:Tuple(match:Boolean, latestEvent:trace::TraceElement) = chain->iterate(chainElem:oclr::EventChainElement; iter:Tuple(match:Boolean, latestEvent:trace::TraceElement) = Tuple{match:Boolean = true, latestEvent:trace::TraceElement = firstEvent} | 
+				if true = iter.match and chain->first() <> chainElem then
+					let nextElem:trace::TraceElement = self.nextFirstOccurrence(subtrace, chainElem.event.name, iter.latestEvent.index+1) in
+					if null = nextElem then
+						Tuple{match:Boolean = false, latestEvent:trace::TraceElement = null}
+					else
+						Tuple{
+							match:Boolean =	chainElem.timeDistance->notEmpty() implies (
+									if oclr::ComparingOperator::ATLEAST = chainElem.timeDistance.comparingOperator then
+										chainElem.timeDistance.quantity <= nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+									else (
+										if oclr::ComparingOperator::ATMOST = chainElem.timeDistance.comparingOperator then
+											chainElem.timeDistance.quantity >= nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+										else							
+											chainElem.timeDistance.quantity = nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+										endif
+									)
+									endif
+								), 
+							latestEvent:trace::TraceElement = nextElem
+						}
+					endif
+				else
+					iter
+				endif
+			) in 
+			if true = matching.match then
+				Tuple{fromEvent:trace::TraceElement=firstEvent, toEvent:trace::TraceElement=matching.latestEvent}
+			else
+				result
+			endif
+			)
+		else
+			result
+		endif
+	)
+endif
+
+def: findAllOccurrences(subtrace:OrderedSet(trace::TraceElement), chain:OrderedSet(oclr::EventChainElement)):OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = 
+--return all occurrences of 'chain' in 'subtrace'
+let indicesOfFirst:OrderedSet(trace::TraceElement) = self.findAllOccurrences(subtrace, chain->first().event.name) in
+if chain->size() = 1 then
+	indicesOfFirst->iterate(elem:trace::TraceElement; result:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = OrderedSet{Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null}} | result->append(Tuple{fromEvent:trace::TraceElement=elem, toEvent:trace::TraceElement=elem}))
+else
+	indicesOfFirst->iterate(elem:trace::TraceElement; result:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = OrderedSet{Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=subtrace->first()}} |
+		if result->last().toEvent.index <= elem.index then
+			let find:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = self.nextFirstOccurrence(subtrace, chain, indicesOfFirst, elem.index) in
+			if Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} <> find then
+				result->append(find)
+			else
+				result
+			endif
+		else
+			result
+		endif
+	)
+endif
+
+def: checkPatternResponse(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean =
+--check the satisfiability of the response pattern 'effect responding cause'
+--in the first event in the chain 'effect', it may contains time distance to the last event in the chain 'cause'
+if subtrace->isEmpty() then
+ 	true
+else
+	let orderPattern:oclr::OrderPattern = pattern.oclAsType(oclr::OrderPattern), effect:OrderedSet(oclr::EventChainElement) = orderPattern.block1, cause:OrderedSet(oclr::EventChainElement) = orderPattern.block2, indicesOfCause:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.findAllOccurrences(subtrace, cause), indicesOfFirstEffect:OrderedSet(trace::TraceElement) = self.findAllOccurrences(subtrace, effect->first().event.name) in
+	if indicesOfCause->size() > 1 then
+		indicesOfCause->subOrderedSet(2, indicesOfCause->size())->iterate(elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement); iter:Tuple(satisfaction:Boolean, indexOfLastMatchedEffect:Integer) = Tuple{satisfaction:Boolean=true, indexOfLastMatchedEffect:Integer=0} |
+		  if true = iter.satisfaction then
+		    let matchedEffect:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = self.nextFirstOccurrence(subtrace, effect, indicesOfFirstEffect, elem.toEvent.index+1) in
+		    if Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} <> matchedEffect then 
+		      let firstOfMatchedEffect:trace::TraceElement = matchedEffect.fromEvent, lastOfMatchedCause:trace::TraceElement = elem.toEvent in
+		      Tuple{satisfaction:Boolean=(iter.indexOfLastMatchedEffect < elem.fromEvent.index and 
+		        (orderPattern.timeDistance->notEmpty() implies 
+		        	  if oclr::ComparingOperator::ATLEAST = orderPattern.timeDistance.comparingOperator then
+		            orderPattern.timeDistance.quantity <= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		          else
+		            if oclr::ComparingOperator::ATMOST = orderPattern.timeDistance.comparingOperator then
+		              orderPattern.timeDistance.quantity >= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		            else
+		              orderPattern.timeDistance.quantity = firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		            endif
+		          endif
+		        )), indexOfLastMatchedEffect:Integer=matchedEffect.toEvent.index
+		       }
+		    else
+		      Tuple{satisfaction:Boolean=false, indexOfLastMatchedEffect:Integer=0}
+		    endif
+		  else
+		    iter
+		  endif
+		).satisfaction
+	else
+		true
+	endif
+endif
+
+def: previousFirstOccurrence(subtrace:OrderedSet(trace::TraceElement), chain:OrderedSet(oclr::EventChainElement), indicesOfLast:OrderedSet(trace::TraceElement), indexBegin:Integer):Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) =
+--return the previous first occurrence of 'chain' in 'subtrace' from the index 'indexBegin' with the help 'indicesOfLast'
+if chain->size() = 1 then
+	let i:Integer = indicesOfLast->iterate(elem:trace::TraceElement; i:Integer=0 | if elem.index <= indexBegin then i+1 else i endif)
+	in 
+	if i <> 0 then
+		let event:trace::TraceElement = indicesOfLast->at(i) in
+		Tuple{fromEvent:trace::TraceElement=event, toEvent:trace::TraceElement=event}
+	else
+		Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null}
+	endif
+else
+	let sizeOfChain:Integer = chain->size(), chainReversed:OrderedSet(oclr::EventChainElement) = Sequence{0..(sizeOfChain-1)}->collect(i:Integer | chain->at(sizeOfChain - i)), sizeOfIndicesOfLast:Integer = indicesOfLast->size(), indicesOfLastReversed:OrderedSet(trace::TraceElement) = Sequence{0..(sizeOfIndicesOfLast-1)}->collect(i:Integer | indicesOfLast->at(sizeOfIndicesOfLast-i)) in
+	indicesOfLastReversed->iterate(lastEvent:trace::TraceElement; result:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} | 
+		if indexBegin >= lastEvent.index and Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} = result then 
+			let matching:Tuple(match:Boolean, latestEvent:trace::TraceElement) = chainReversed->iterate(chainElem:oclr::EventChainElement; iter:Tuple(match:Boolean, latestEvent:trace::TraceElement) = Tuple{match:Boolean = true, latestEvent:trace::TraceElement = lastEvent} |
+				if true = iter.match and chainReversed->first() <> chainElem then
+					let previousElem:trace::TraceElement = self.previousFirstOccurrence(subtrace, chainElem.event.name, iter.latestEvent.index -1) in
+					if null = previousElem then
+						Tuple{match:Boolean = false, latestEvent:trace::TraceElement = null}
+					else
+						Tuple{match:Boolean = (chainElem.timeDistance->notEmpty() implies
+							(if oclr::ComparingOperator::ATLEAST = chainElem.timeDistance.comparingOperator then
+								chainElem.timeDistance.quantity <= iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+							else
+								if oclr::ComparingOperator::ATMOST = chainElem.timeDistance.comparingOperator then
+									chainElem.timeDistance.quantity >= iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+								else
+									chainElem.timeDistance.quantity = iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+								endif
+							endif)), latestEvent = previousElem
+						}
+					endif
+		        else
+					iter
+				endif)
+			in
+	      	if true = matching.match then
+				Tuple{fromEvent:trace::TraceElement=matching.latestEvent, toEvent:trace::TraceElement=lastEvent}
+			else
+				result
+			endif
+	    else
+			result
+		endif
+	)
+endif
+
+def: checkPatternPrecedence(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean =
+--check the satisfiability of the precedence pattern 'cause preceding effect'
+--in the first event in the chain 'effect', it may contains time distance to the last event in the chain 'cause'
+if subtrace->isEmpty() then
+	true
+else
+	let orderPattern:oclr::OrderPattern = pattern.oclAsType(oclr::OrderPattern), cause:OrderedSet(oclr::EventChainElement) = orderPattern.block1, effect:OrderedSet(oclr::EventChainElement) = orderPattern.block2, indicesOfEffect:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.findAllOccurrences(subtrace, effect), indicesOfLastCause:OrderedSet(trace::TraceElement) = self.findAllOccurrences(subtrace, cause->last().event.name) in
+	if indicesOfEffect->size() > 1 then
+		indicesOfEffect->subOrderedSet(2, indicesOfEffect->size())->iterate(elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement);  iter:Tuple(satisfaction:Boolean, indexOfLastMatchedEffect:Integer) = Tuple{satisfaction:Boolean=true, indexOfLastMatchedEffect:Integer=0} |
+		  if true = iter.satisfaction then
+		    let matchedCause:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement) = self.previousFirstOccurrence(subtrace, cause, indicesOfLastCause, elem.fromEvent.index-1) in
+		    if Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} <> matchedCause then 
+		      let lastOfMatchedCause:trace::TraceElement = matchedCause.toEvent, firstOfMatchedEffect:trace::TraceElement = elem.fromEvent in
+		      Tuple{satisfaction:Boolean=(iter.indexOfLastMatchedEffect < matchedCause.fromEvent.index and 
+		      	(orderPattern.timeDistance->notEmpty() implies
+		          if oclr::ComparingOperator::ATLEAST = orderPattern.timeDistance.comparingOperator then
+		            orderPattern.timeDistance.quantity <= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		          else
+		            if oclr::ComparingOperator::ATMOST = orderPattern.timeDistance.comparingOperator then
+		              orderPattern.timeDistance.quantity >= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		            else
+		              orderPattern.timeDistance.quantity = firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+		            endif
+		          endif)), indexOfLastMatchedEffect:Integer=elem.toEvent.index
+		       }
+		    else
+		      Tuple{satisfaction:Boolean=false, indexOfLastMatchedEffect:Integer=0}
+		    endif
+		  else
+		    iter
+		  endif
+		).satisfaction
+	else
+		true
+	endif
+endif
+
+def: checkPatternExistence(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean =
+--check the satisfiability of the existence pattern 'pattern'
+if subtrace->isEmpty() then
+	true
+else
+	let occPattern:oclr::OccurrencePattern = pattern.oclAsType(oclr::OccurrencePattern), eventName:String = occPattern.event.name, count:Integer = subtrace->select(elem | eventName = elem.event.name)->size() in
+	if occPattern.comparingOperator->notEmpty() then
+	  let comparingOperator:oclr::ComparingOperator = occPattern.comparingOperator, n:Integer = occPattern.times in
+	  if oclr::ComparingOperator::ATLEAST = comparingOperator then
+	    count >= n
+	  else
+	    if oclr::ComparingOperator::ATMOST = comparingOperator then
+	      count <= n
+	    else
+	      count = n
+	    endif
+	  endif
+	else
+	  count >= 1
+	endif
+endif
+
+def: checkPatternAbsence(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean = 
+--check the satisfiability of the absence pattern 'pattern'
+if subtrace->isEmpty() then
+	true
+else
+	let occPattern:oclr::OccurrencePattern = pattern.oclAsType(oclr::OccurrencePattern), eventName:String = occPattern.event.name, count:Integer = subtrace->select(elem | eventName = elem.event.name)->size() in
+	if occPattern.comparingOperator->notEmpty() then
+	  let comparingOperator:oclr::ComparingOperator = occPattern.comparingOperator, n:Integer = occPattern.times in
+	  if oclr::ComparingOperator::EXACTLY = comparingOperator then
+	    count <> n
+	  else
+	    count = 0
+	  endif
+	else
+	  count = 0
+	endif
+endif
+
+def: checkPatternUniversality(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean = 
+--check the satisfiability of the universality pattern 'always eventName'
+let eventName:String = pattern.oclAsType(oclr::Universality).event.name in
+subtrace->forAll(elem:trace::TraceElement | eventName = elem.event.name)
+
+
+endpackage
