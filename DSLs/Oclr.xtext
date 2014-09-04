@@ -1,0 +1,122 @@
+grammar lu.svv.offline.oclr.Oclr with org.eclipse.xtext.common.Terminals
+
+generate oclr "http://www.svv.lu/offline/oclr/Oclr"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+OCLRConstraint returns OCLRConstraint:
+	(oclrExpressions+=OCLRExpression ';'	)*;
+
+OCLRExpression returns OCLRExpression:
+	(('temporal')? (name=QualifiedName)? ':')?
+	scope=Scope
+	pattern=Pattern;
+
+Scope returns Scope:
+	Globally | UniScope | BiScope;
+
+Pattern returns Pattern:
+	Universality | ExistencePattern | AbsencePattern | OrderPattern;
+
+EString returns ecore::EString:
+	STRING | ID;
+
+Globally returns Globally:
+	scopeType=GloballyType;
+
+UniScope returns UniScope:
+	(scopeType=UniScopeType) boundary=Boundary;
+
+BiScope returns BiScope:
+	('between' boundaryBegin=BiBoundary scopeType=BetweenAndScopeType boundaryEnd=BiBoundary) |
+	('after'	 boundaryBegin=BiBoundary scopeType=AfterUntilScopeType boundaryEnd=BiBoundary);
+
+Boundary returns Boundary:
+	(ordinal=EInt)?
+	event=EventRepresentation
+	(timeDistance=TimeDistance)?;
+	
+BiBoundary returns Boundary:
+	(ordinal=EInt)?
+	event=EventRepresentation
+	(timeDistance=AtLeastTimeDistance)?;
+
+Universality returns Universality:
+	patternType=UniversalityType event=EventRepresentation;
+
+ExistencePattern returns OccurrencePattern:
+	patternType=ExistencePatternType
+	(comparingOperator=ComparingOperator)?
+	(times=EInt)?
+	event=EventRepresentation;
+	
+AbsencePattern returns OccurrencePattern:
+	patternType=AbsencePatternType
+	(comparingOperator=ExactlyOperator)?
+	(times=EInt)?
+	event=EventRepresentation;
+
+OrderPattern returns OrderPattern:
+	block1+=EventChainFirstElement ( "," block1+=EventChainElement)*
+	patternType=OrderPatternType (timeDistance=TimeDistance)?
+	block2+=EventChainFirstElement ( "," block2+=EventChainElement)*;
+
+EventChainElement returns EventChainElement:
+	('#' timeDistance=TimeDistance)?
+	event=EventRepresentation;
+
+EventChainFirstElement returns EventChainElement:
+	event=EventRepresentation;
+
+EInt returns ecore::EInt:
+	INT;
+	//'-1' | INT;
+
+EventRepresentation returns EventRepresentation:
+	{EventRepresentation}
+	name=QualifiedName;
+
+TimeDistance returns TimeDistance:
+	comparingOperator=ComparingOperator
+	value=EInt
+	'tu';
+
+AtLeastTimeDistance returns TimeDistance:
+	comparingOperator=AtLeastOperator
+	value=EInt
+	'tu';
+
+enum GloballyType returns ScopeType:
+	GLOBALLY = 'globally';
+
+enum UniScopeType returns ScopeType:
+	BEFORE = 'before' | AFTER = 'after';
+
+enum BetweenAndScopeType returns ScopeType:
+	BETWEENAND = 'and';
+
+enum AfterUntilScopeType returns ScopeType:
+	AFTERUNTIL = 'until';
+
+enum UniversalityType returns PatternType:
+	UNIVERSALITY = 'always';
+
+enum ExistencePatternType returns PatternType:
+	EXISTENCE = 'eventually';
+
+enum AbsencePatternType returns PatternType:
+	ABSENCE = 'never';
+	
+enum OrderPatternType returns PatternType:
+	PRECEDENCE = 'preceding' | RESPONSE = 'responding';
+
+enum ComparingOperator returns ComparingOperator:
+	ATLEAST = 'at least' | ATMOST = 'at most' | EXACTLY = 'exactly';
+
+enum ExactlyOperator returns ComparingOperator:
+	EXACTLY = 'exactly';
+	
+enum AtLeastOperator returns ComparingOperator:
+	ATLEAST = 'at least';
+
+QualifiedName:
+	EString (('.' | '::') (EString | INT))*;
