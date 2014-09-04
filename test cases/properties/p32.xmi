@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+  <oclrExpressions name="P32">
+    <scope xsi:type="oclr:BiScope" scopeType="and">
+      <boundaryBegin>
+        <event name="a"/>
+      </boundaryBegin>
+      <boundaryEnd>
+        <event name="b"/>
+      </boundaryEnd>
+    </scope>
+    <pattern xsi:type="oclr:Universality">
+      <event name="c"/>
+    </pattern>
+  </oclrExpressions>
+</oclr:OCLRConstraint>

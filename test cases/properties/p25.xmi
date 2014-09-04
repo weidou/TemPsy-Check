@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ASCII"?>
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+  <oclrExpressions name="P25">
+    <scope xsi:type="oclr:UniScope" scopeType="after">
+      <boundary>
+        <event name="a"/>
+      </boundary>
+    </scope>
+    <pattern xsi:type="oclr:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="b"/>
+      </block1>
+      <timeDistance comparingOperator="at most" quantity="3000"/>
+      <block2>
+        <event name="c"/>
+      </block2>
+      <block2>
+        <event name="d"/>
+      </block2>
+    </pattern>
+  </oclrExpressions>
+</oclr:OCLRConstraint>

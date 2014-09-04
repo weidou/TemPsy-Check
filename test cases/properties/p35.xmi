@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+  <oclrExpressions name="P38">
+    <scope xsi:type="oclr:BiScope" scopeType="and">
+      <boundaryBegin>
+        <event name="c"/>
+      </boundaryBegin>
+      <boundaryEnd>
+        <event name="d"/>
+      </boundaryEnd>
+    </scope>
+    <pattern xsi:type="oclr:OccurrencePattern" patternType="never" comparingOperator="exactly" times="2">
+      <event name="a"/>
+    </pattern>
+  </oclrExpressions>
+</oclr:OCLRConstraint>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ASCII"?>
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+  <oclrExpressions name="P21">
+    <scope xsi:type="oclr:UniScope" scopeType="after">
+      <boundary>
+        <event name="a"/>
+        <timeDistance comparingOperator="at most" quantity="5000"/>
+      </boundary>
+    </scope>
+    <pattern xsi:type="oclr:OccurrencePattern" patternType="eventually">
+      <event name="b"/>
+    </pattern>
+  </oclrExpressions>
+</oclr:OCLRConstraint>
