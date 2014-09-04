@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="oclr" nsURI="http://www.svv.lu/offline/oclr/Oclr" nsPrefix="oclr">
+  <eClassifiers xsi:type="ecore:EClass" name="OCLRConstraint">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="oclrExpressions" upperBound="-1"
+        eType="#//OCLRExpression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OCLRExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scope" eType="#//Scope"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="#//Pattern"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Scope">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scopeType" eType="#//ScopeType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Pattern">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="patternType" eType="#//PatternType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Globally" eSuperTypes="#//Scope"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UniScope" eSuperTypes="#//Scope">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="boundary" eType="#//Boundary"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BiScope" eSuperTypes="#//Scope">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="boundaryBegin" eType="#//Boundary"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="boundaryEnd" eType="#//Boundary"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Boundary">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordinal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//EventRepresentation"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeDistance" eType="#//TimeDistance"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Universality" eSuperTypes="#//Pattern">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//EventRepresentation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OccurrencePattern" eSuperTypes="#//Pattern">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comparingOperator" eType="#//ComparingOperator"
+        defaultValueLiteral="at least"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="times" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//EventRepresentation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OrderPattern" eSuperTypes="#//Pattern">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="block1" upperBound="-1"
+        eType="#//EventChainElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeDistance" eType="#//TimeDistance"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="block2" upperBound="-1"
+        eType="#//EventChainElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventChainElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="timeDistance" eType="#//TimeDistance"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//EventRepresentation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventRepresentation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeDistance">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comparingOperator" eType="#//ComparingOperator"
+        defaultValueLiteral="at least"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ScopeType">
+    <eLiterals name="GLOBALLY" literal="globally"/>
+    <eLiterals name="BEFORE" value="1" literal="before"/>
+    <eLiterals name="AFTER" value="2" literal="after"/>
+    <eLiterals name="BETWEENAND" value="3" literal="and"/>
+    <eLiterals name="AFTERUNTIL" value="4" literal="until"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PatternType">
+    <eLiterals name="UNIVERSALITY" literal="always"/>
+    <eLiterals name="EXISTENCE" value="1" literal="eventually"/>
+    <eLiterals name="ABSENCE" value="2" literal="never"/>
+    <eLiterals name="PRECEDENCE" value="3" literal="preceding"/>
+    <eLiterals name="RESPONSE" value="4" literal="responding"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ComparingOperator">
+    <eLiterals name="ATLEAST" literal="at least"/>
+    <eLiterals name="ATMOST" value="1" literal="at most"/>
+    <eLiterals name="EXACTLY" value="2" literal="exactly"/>
+  </eClassifiers>
+</ecore:EPackage>
