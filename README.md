@@ -4,7 +4,7 @@ Welcome to OCLr-check
 OCLr-check is a toolset to do offline check for OCLR properties on synthesized traces, which is developed by Wei Dou (http://people.svv.lu/dou) at the SVV lab (http://www.svv.lu) of the University of Luxembourg (http://wwwen.uni.lu).
 
 *OCLR* is a temporal extension of OCL (Object Constraint Language, http://www.omg.org/spec/OCL) which allows users to express temporal properties using the state-of-the-art property specification patterns. (see http://link.springer.com/chapter/10.1007%2F978-3-319-09195-2_4).
-Precondition
+Requirements
 ---
 MacOS/Linux/Unix,
 Xtext framework (http://xtext.org) 2.5.0+,
