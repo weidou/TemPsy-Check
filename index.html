@@ -1,80 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>OCLr-check by weidou</title>
+    <meta name="description" content="OCLR-Check : Public website of OCLR-Check">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <title>OCLR-Check</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>OCLr-check</h1>
-        <p>Public website of OCLr-check</p>
-        <p class="view"><a href="https://github.com/weidou/OCLR-Check">View the Project on GitHub <small>weidou/OCLR-Check</small></a></p>
-        <ul>
-          <li><a href="https://github.com/weidou/OCLR-Check/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/weidou/OCLR-Check/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/weidou/OCLR-Check">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/weidou/OCLR-Check">View on GitHub</a>
+
+          <h1 id="project_title">OCLR-Check</h1>
+          <h2 id="project_tagline">Public website of OCLR-Check</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/weidou/OCLR-Check/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/weidou/OCLR-Check/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
-<a name="welcome-to-oclr-check" class="anchor" href="#welcome-to-oclr-check"><span class="octicon octicon-link"></span></a>Welcome to OCLr-check</h1>
+<a name="welcome-to-oclr-check" class="anchor" href="#welcome-to-oclr-check"><span class="octicon octicon-link"></span></a>Welcome to OCLR-Check</h1>
 
-<p>OCLr-check is a toolset to do offline check for OCLR properties on synthesized traces, which is developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>) at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>).</p>
+<p>OCLR-Check is a toolset to perform offline checking of <em>OCLR</em> properties on system execution traces. The tools have been developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>) and maintained by Wei and Domenico Bianculli (<a href="http://people.svv.lu/bianculli">http://people.svv.lu/bianculli</a>) at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>). More introduction  can be found in this technical report: "Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>A model-based approach to trace checking of temporal properties with OCL</strong>. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014. [Online]. Available: <a href="http://hdl.handle.net/10993/16112">http://hdl.handle.net/10993/16112</a>"</p>
 
-<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using the state-of-the-art property specification patterns (see <a href="http://link.springer.com/chapter/10.1007%2F978-3-319-09195-2_4">http://link.springer.com/chapter/10.1007%2F978-3-319-09195-2_4</a>).</p>
+<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using property specification patterns (<a href="http://patterns.projects.cis.ksu.edu">http://patterns.projects.cis.ksu.edu</a>). The syntax and semantics of <em>OCLR</em> have been introduced in this paper: "Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>OCLR: a more expressive, pattern-based temporal extension of OCL</strong>. In Proceedings of the 2014 European Conference on Modelling Foundations and Applications (ECMFA 2014), York, United Kingdom, volume 8569 of Lecture Notes in Computer Science, pages 51-66. Springer, July 2014."</p>
 
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
-<p>MacOS/Linux/Unix,
-Xtext framework (<a href="http://xtext.org">http://xtext.org</a>) 2.5.0+,
-Java 1.6.0_65+,
-Eclipse OCL 4.1.0</p>
+<ul>
+<li>Mac OS X / Linux</li>
+<li>Xtext framework (<a href="http://xtext.org">http://xtext.org</a>) 2.5.0+</li>
+<li>Java 1.6.0_65</li>
+<li>Eclipse OCL 4.1.0</li>
+</ul><h2>
+<a name="content-of-the-bundle" class="anchor" href="#content-of-the-bundle"><span class="octicon octicon-link"></span></a>Content of the bundle</h2>
 
-<h2>
-<a name="content" class="anchor" href="#content"><span class="octicon octicon-link"></span></a>Content</h2>
+<p>The OCLR-Check distribution contains two modules:</p>
 
 <h3>
 <a name="checker" class="anchor" href="#checker"><span class="octicon octicon-link"></span></a>Checker</h3>
 
-<p>The offline trace checker is comprised of three parts: the models (Trace model and OCLR meta model), the mapping from <em>OCLR</em> to OCL, and the check programs. To run the check program, you have to build a Java project in Xtext, and generate java codes with the models. Once you need to add the <em>OCLR</em> translation and the check programs into the project, you may need to change the package names in these codes to adapt the new environment.</p>
+<p>The offline trace checker is comprised of four parts: the OCLR-Check main programs, the models, the DSLs, and the mapping from <em>OCLR</em> to OCL.</p>
 
-<p>The folder "./checker/DSLs/" contains those Xtext  codes for creating Ecore models of <em>trace</em> and <em>OCLR</em> and also 38 <em>OCLR</em> specifications with the DSL are attached.</p>
+<ul>
+<li>In the <em>main</em> folder, <em>OfflineCheck.java</em> is the main program of checking the <em>OCLR</em> properties, which provides all the evaluation functions (e.g., <em>check_globally()</em>) in accordance with the evaluation section of the technical report. The other Java program <em>ConstraintFactory.java</em> is an auxiliary class for building OCL constraints and/or queries, namely the OCL templates for checking <em>OCLR</em> properties are defined in this program.</li>
+<li>The <em>models</em> contains three Ecore models: a trace model, an <em>OCLR</em> meta model, and a check model. By using the three models, we generate the corresponding Java codes and check the traces with our main programs. The description of the first two models can be found in the technical report. The check model defines a class called <em>Monitor</em>, which consists of a set of references to the <em>Trace</em> class defined in the Trace model and a set of references to the <em>OCLRConstraint</em> class defined in the <em>OCLR</em> meta model.</li>
+<li>In fact, the trace model and the <em>OCLR</em> meta model above are generated by the Xtext definitions in the <em>DSLs</em> folder (<em>Trace.xtext</em> and <em>Oclr.xtext</em>). We also provide the programs for building XMI instances of the two models.</li>
+<li>The translation from <em>OCLR</em> to OCL are defined as OCL operations in <em>oclr2ocl</em>, which is invoked by the main programs for trace checking.</li>
+</ul><p>To run the OCLR-Check main programs, you have to build a Java project in Xtext, and generate java codes with the models. Once the project is ready, you need to add the <em>OCLR</em> translation and the main programs into the project, you may need to change the package names in these codes to adapt the new environment.</p>
 
 <h3>
-<a name="test-cases" class="anchor" href="#test-cases"><span class="octicon octicon-link"></span></a>Test Cases</h3>
+<a name="evaluation" class="anchor" href="#evaluation"><span class="octicon octicon-link"></span></a>Evaluation</h3>
 
-<p>The test cases contain two sets of data: <em>OCLR</em> properties (instances of <em>OCLR</em> meta model) and traces (instances of the <em>Trace</em> model).</p>
+<p>This module contains <em>OCLR</em> properties, traces and trace generators that generate those traces.</p>
 
-<h3>
-<a name="trace-generators" class="anchor" href="#trace-generators"><span class="octicon octicon-link"></span></a>Trace Generators</h3>
+<ul>
+<li>
+<h5>
+<a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>Properties</h5>
 
-<p>These are the programs which generate the traces in test cases. But each run of the programs can have different correct traces, so if you are interested for new test cases, please download them and generate your own traces.
-You can either use the shell program in each subfolder or invoke the Python program one by one, like:</p>
+<p>We provide 38 <em>OCLR</em> properties with both their DSL specifications and XMI instances with respect to the <em>OCLR</em> meta model. In fact, those XMI instances are generated from the DSL specifications by using the program: "/checker/DSLs/OCLRInstanceFactory.java".</p>
+</li>
+<li>
+<h5>
+<a name="traces" class="anchor" href="#traces"><span class="octicon octicon-link"></span></a>Traces</h5>
 
-<pre><code>./trace_generator_globally.py --help
-./trace_generator_globally.py -s 'globally' -p 'always a' -i p1 -l 1000000
-</code></pre>
+<p>To check different properties, different traces are generated. They are grouped by property scopes - <em>globally</em> (p1-p12), <em>before</em> (p13-p20), <em>after</em> (p21-p31), <em>between-and</em> (p32-38).</p>
+</li>
+<li>
+<h5>
+<a name="trace-generators" class="anchor" href="#trace-generators"><span class="octicon octicon-link"></span></a>Trace Generators</h5>
 
-<p>The first line will tell you how to use this program.</p>
+<p>For different scopes, the trace generators are implemented with different generation strategies. We will not explain again the details about the strategies (they can be found in the evaluation section of the technical report), but we will briefly introduce how to use the scripts (*.py and *.sh).</p>
+
+<ul>
+<li>Each Python program (*.py) is actually a trace generator which can be distinguished by its name, e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <em>globally</em> scope. A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
+<code>./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000</code>
+</li>
+<li>A Shell script (*.sh) is used to generate traces automatically for each strategy by invoking the same Python program with different parameters.</li>
+</ul>
+</li>
+</ul>
       </section>
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/weidou">weidou</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">OCLR-Check maintained by <a href="https://github.com/weidou">weidou</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -85,6 +116,7 @@ You can either use the shell program in each subfolder or invoke the Python prog
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
