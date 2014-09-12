@@ -35,7 +35,7 @@ We provide 38 *OCLR* properties with both their DSL specifications and XMI insta
 To check different properties, different traces are generated. They are grouped by property scopes - *globally* (p1-p12), *before* (p13-p20), *after* (p21-p31), *between-and* (p32-38).
 
 * #####Trace Generators
-For different scopes, the trace generators are implemented with different generation strategies. We will not explain again the details about the strategies (they can be found in the evaluation section of the technical report), but we will briefly introduce how to use the scripts (\*.py and \*.sh)..
+For different scopes, the trace generators are implemented with different generation strategies. We will not explain again the details about the strategies (they can be found in the evaluation section of the technical report), but we will briefly introduce how to use the scripts (\*.py and \*.sh).
   * Each Python program (\*.py) is actually a trace generator which can be distinguished by its name, e.g., *trace_generator_globally.py* is the trace generator to generate the trace for the properties with the *globally* scope. A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
   ```./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000```
   * A Shell script (\*.sh) is used to generate traces automatically for each strategy by invoking the same Python program with different parameters.
