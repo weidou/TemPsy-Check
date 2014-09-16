@@ -34,9 +34,14 @@
         <h1>
 <a name="welcome-to-oclr-check" class="anchor" href="#welcome-to-oclr-check"><span class="octicon octicon-link"></span></a>Welcome to OCLR-Check</h1>
 
-<p>OCLR-Check is a toolset to perform offline checking of <em>OCLR</em> properties on system execution traces. The tools have been developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>) and maintained by Wei and Domenico Bianculli (<a href="http://people.svv.lu/bianculli">http://people.svv.lu/bianculli</a>) at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>). More introduction  can be found in this technical report: "Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>A model-based approach to trace checking of temporal properties with OCL</strong>. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014. [Online]. Available: <a href="http://hdl.handle.net/10993/16112">http://hdl.handle.net/10993/16112</a>"</p>
+<p>OCLR-Check is a toolset to perform offline checking of <em>OCLR</em> properties on system execution traces. The toolset has been developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>), at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>). 
+More information on OCLR-Check is available in this technical report:</p>
 
-<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using property specification patterns (<a href="http://patterns.projects.cis.ksu.edu">http://patterns.projects.cis.ksu.edu</a>). The syntax and semantics of <em>OCLR</em> have been introduced in this paper: "Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>OCLR: a more expressive, pattern-based temporal extension of OCL</strong>. In Proceedings of the 2014 European Conference on Modelling Foundations and Applications (ECMFA 2014), York, United Kingdom, volume 8569 of Lecture Notes in Computer Science, pages 51-66. Springer, July 2014."</p>
+<p>Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>A model-based approach to trace checking of temporal properties with OCL</strong>. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014.  Available online at <a href="http://hdl.handle.net/10993/16112">http://hdl.handle.net/10993/16112</a></p>
+
+<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using property specification patterns (<a href="http://patterns.projects.cis.ksu.edu">http://patterns.projects.cis.ksu.edu</a>). <em>OCLR</em> has been introduced in this paper: </p>
+
+<p>Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>OCLR: a more expressive, pattern-based temporal extension of OCL</strong>. In Proceedings of the 2014 European Conference on Modelling Foundations and Applications (ECMFA 2014), York, United Kingdom, volume 8569 of Lecture Notes in Computer Science, pages 51-66. Springer, July 2014. Available online  at <a href="http://dx.doi.org/10.1007/978-3-319-09195-2_4">http://dx.doi.org/10.1007/978-3-319-09195-2_4</a></p>
 
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
@@ -47,54 +52,54 @@
 <li>Java 1.6.0_65</li>
 <li>Eclipse OCL 4.1.0</li>
 </ul><h2>
-<a name="content-of-the-bundle" class="anchor" href="#content-of-the-bundle"><span class="octicon octicon-link"></span></a>Content of the bundle</h2>
+<a name="content-of-the-distribution" class="anchor" href="#content-of-the-distribution"><span class="octicon octicon-link"></span></a>Content of the distribution</h2>
 
 <p>The OCLR-Check distribution contains two modules:</p>
 
 <h3>
-<a name="checker" class="anchor" href="#checker"><span class="octicon octicon-link"></span></a>Checker</h3>
+<a name="checker-checker-folder" class="anchor" href="#checker-checker-folder"><span class="octicon octicon-link"></span></a>Checker (<em>checker</em> folder)</h3>
 
 <p>The offline trace checker is comprised of four parts: the OCLR-Check main programs, the models, the DSLs, and the mapping from <em>OCLR</em> to OCL.</p>
 
 <ul>
-<li>In the <em>main</em> folder, <em>OfflineCheck.java</em> is the main program of checking the <em>OCLR</em> properties, which provides all the evaluation functions (e.g., <em>check_globally()</em>) in accordance with the evaluation section of the technical report. The other Java program <em>ConstraintFactory.java</em> is an auxiliary class for building OCL constraints and/or queries, namely the OCL templates for checking <em>OCLR</em> properties are defined in this program.</li>
-<li>The <em>models</em> contains three Ecore models: a trace model, an <em>OCLR</em> meta model, and a check model. By using the three models, we generate the corresponding Java codes and check the traces with our main programs. The description of the first two models can be found in the technical report. The check model defines a class called <em>Monitor</em>, which consists of a set of references to the <em>Trace</em> class defined in the Trace model and a set of references to the <em>OCLRConstraint</em> class defined in the <em>OCLR</em> meta model.</li>
-<li>In fact, the trace model and the <em>OCLR</em> meta model above are generated by the Xtext definitions in the <em>DSLs</em> folder (<em>Trace.xtext</em> and <em>Oclr.xtext</em>). We also provide the programs for building XMI instances of the two models.</li>
-<li>The translation from <em>OCLR</em> to OCL are defined as OCL operations in <em>oclr2ocl</em>, which is invoked by the main programs for trace checking.</li>
-</ul><p>To run the OCLR-Check main programs, you have to build a Java project in Xtext, and generate java codes with the models. Once the project is ready, you need to add the <em>OCLR</em> translation and the main programs into the project, you may need to change the package names in these codes to adapt the new environment.</p>
-
-<h3>
+<li>In the <em>main</em> folder, <em>OfflineCheck.java</em> is the main program for checking <em>OCLR</em> properties. The other Java program <em>ConstraintFactory.java</em> is an auxiliary class for building OCL constraints and/or queries.</li>
+<li>The <em>models</em> folder contains three Ecore models: a <em>trace</em> model, an <em>OCLR</em> meta model, and a <em>check</em> model. By using the three models, we generate the corresponding Java code and check the traces with our <em>checker</em> programs.</li>
+<li>the <em>DSLs</em> folder contains  the Xtext definitions (<em>Trace.xtext</em> and <em>Oclr.xtext</em>) of the trace model and of the <em>OCLR</em> meta model. It also contains the programs for building XMI instances of the two models.</li>
+<li>The <em>oclr2ocl</em> folder contains the definition of the  translation  that maps <em>OCLR</em> constraints into OCL constraints on the trace model.</li>
+</ul><h3>
 <a name="evaluation" class="anchor" href="#evaluation"><span class="octicon octicon-link"></span></a>Evaluation</h3>
 
-<p>This module contains <em>OCLR</em> properties, traces and trace generators that generate those traces.</p>
+<p>This module contains the artifacts used to perform the evaluation described in the aforementioned technical report:
+<em>OCLR</em> properties, traces, and the trace generators used to generate the traces.</p>
 
 <ul>
 <li>
 <h5>
 <a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>Properties</h5>
 
-<p>We provide 38 <em>OCLR</em> properties with both their DSL specifications and XMI instances with respect to the <em>OCLR</em> meta model. In fact, those XMI instances are generated from the DSL specifications by using the program: "/checker/DSLs/OCLRInstanceFactory.java".</p>
+<p>We provide 38 <em>OCLR</em> properties, both as DSL specifications and as XMI instances conforming to the <em>OCLR</em> meta model. These XMI instances are generated from the DSL specifications by using the program: "/checker/DSLs/OCLRInstanceFactory.java".</p>
 </li>
 <li>
 <h5>
 <a name="traces" class="anchor" href="#traces"><span class="octicon octicon-link"></span></a>Traces</h5>
 
-<p>To check different properties, different traces are generated. They are grouped by property scopes - <em>globally</em> (p1-p12), <em>before</em> (p13-p20), <em>after</em> (p21-p31), <em>between-and</em> (p32-38).</p>
+<p>For each property to check, we provide several traces. These traces are grouped by property scopes - <em>globally</em> (p1-p12), <em>before</em> (p13-p20), <em>after</em> (p21-p31), <em>between-and</em> (p32-38).</p>
 </li>
 <li>
 <h5>
 <a name="trace-generators" class="anchor" href="#trace-generators"><span class="octicon octicon-link"></span></a>Trace Generators</h5>
 
-<p>For different scopes, the trace generators are implemented with different generation strategies. We will not explain again the details about the strategies (they can be found in the evaluation section of the technical report), but we will briefly introduce how to use the scripts (*.py and *.sh).</p>
-
-<ul>
-<li>Each Python program (*.py) is actually a trace generator which can be distinguished by its name, e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <em>globally</em> scope. A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
+<p>Traces generator programs implement various generation strategies, depending on the type of property that one wants to check on the trace being generated. 
+Generators are Python programs named after the type of property for which they generate traces;  e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <em>globally</em> scope. 
+A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
 <code>./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000</code>
+corresponds to generating traces for the property <code>globally always a</code> with various trace lengths: 100K, 200K, ..., 1M.
+We also provide the shell scripts used to generate the traces for the 38 properties contained in the distribution. </p>
 </li>
-<li>A Shell script (*.sh) is used to generate traces automatically for each strategy by invoking the same Python program with different parameters.</li>
-</ul>
-</li>
-</ul>
+</ul><h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>To run the OCLR-Check main program, you have to build a Java project in Xtext, and generate Java code with the models. Once the project is ready, you need to add the <em>OCLR</em> translation and the main programs into the project, you may need to change the package names in these codes to adapt the new environment.</p>
       </section>
     </div>
 
