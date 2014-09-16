@@ -43,7 +43,7 @@ Traces generator programs implement various generation strategies, depending on 
 Generators are Python programs named after the type of property for which they generate traces;  e.g., *trace_generator_globally.py* is the trace generator to generate the trace for the properties with the *globally* scope. 
 A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
   ```./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000```
-  corresponds to generating a trace TBC ...
+  corresponds to generating traces for the property ```globally always a``` with various trace lengths: 100K, 200K, ..., 1M.
 We also provide the shell scripts used to generate the traces for the 38 properties contained in the distribution. 
 
 #Usage
