@@ -1,40 +1,13 @@
 package lu.svv.offline.check;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.ocl.OCL;
-import org.eclipse.ocl.OCLInput;
-import org.eclipse.ocl.ParserException;
-import org.eclipse.ocl.ecore.Constraint;
-import org.eclipse.ocl.ecore.EcoreEnvironmentFactory;
-import org.eclipse.ocl.expressions.OCLExpression;
-import org.eclipse.ocl.helper.OCLHelper;
-
-import lu.svv.offline.check.impl.CheckFactoryImpl;
-import lu.svv.offline.oclr.OCLRConstraint;
 import lu.svv.offline.oclr.OCLRExpression;
-import lu.svv.offline.oclr.OclrPackage;
 import lu.svv.offline.oclr.PatternType;
 import lu.svv.offline.oclr.ScopeType;
-import lu.svv.offline.trace.Trace;
-import lu.svv.offline.trace.TracePackage;
 
 public class ConstraintFactory {
 

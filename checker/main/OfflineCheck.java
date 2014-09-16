@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.ocl.OCL;
 import org.eclipse.ocl.OCLInput;
 import org.eclipse.ocl.ParserException;
-import org.eclipse.ocl.Query;
 import org.eclipse.ocl.ecore.Constraint;
 import org.eclipse.ocl.ecore.EcoreEnvironmentFactory;
 import org.eclipse.ocl.expressions.OCLExpression;
@@ -39,28 +38,29 @@ public class OfflineCheck {
 	private static final String oclOperationsFile = "../lu.svv.offline/lib/oclr.ocl";
 	
 	public static void main(String[] args) {
-		check_globally();
+		//check_globally();
 	}
     
+	// This method is used for checking the OCLR properties p1-p12. Please change the lists if you only want to check subsets of the properties and traces
 	public static void check_globally(){
-		List<Integer> iList = Arrays.asList(100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000);
-		List<Integer> properties = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12);
+		List<Integer> iList = Arrays.asList(100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000); // indexes of the traces: various trace lengths
+		List<Integer> properties = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12); // properties p1-p12
 		Iterator<Integer> iterProperty = properties.iterator();
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp = "../lu.svv.offline/instance/p%d_%d.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp = "../lu.svv.offline/instances/p%d_%d.xmi";
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
 		while(iterProperty.hasNext()){
 			i=0;
 			int propertyNo = iterProperty.next();
 		    System.out.println("P"+propertyNo+":");
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
+					rc.loadMonitor(pPath, tPath).check(); //check the property
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -72,48 +72,26 @@ public class OfflineCheck {
 		}
 	}
 	
-	public static void check_uniscope(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_before = Arrays.asList(13,14,15,16,17,18,19,20);
-		List<Integer> properties_after = Arrays.asList(21,22,23,24,25,26,27,28,29,30,31);
+	// This method is used for checking the OCLR properties p13-p20. Please change the lists if you only want to check subsets of the properties and traces
+	public static void check_before(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_before = Arrays.asList(13,14,15,16,17,18,19,20); // properties p13-p20
 		Iterator<Integer> iterProperty_before = properties_before.iterator();
-		Iterator<Integer> iterProperty_after = properties_after.iterator();
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_before = "../lu.svv.offline/instance/p%d_100000_%d_before.xmi";
-		String tPathTemp_after = "../lu.svv.offline/instance/p%d_100000_%d_after.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_before = "../lu.svv.offline/instances/p%d_100000_%d_before.xmi";
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
 		while(iterProperty_before.hasNext()){
 			i=0;
 			int propertyNo = iterProperty_before.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_before, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
-				}
-				i++;
-			    System.out.println();
-			}
-		}
-		while(iterProperty_after.hasNext()){
-			i=0;
-			int propertyNo = iterProperty_after.next();
-		    System.out.println("P"+propertyNo);
-			while(i < 5){
-				Iterator<Integer> iter = iList.iterator();
-				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
-					String pPath = String.format(pPathTemp, propertyNo);
-					String tPath = String.format(tPathTemp_after, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
+					rc.loadMonitor(pPath, tPath).check(); //check the property
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -125,51 +103,26 @@ public class OfflineCheck {
 		}
 	}
 	
-	public static void apply_uniscope(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_before = Arrays.asList(13,14,15,16,17,18,19,20);
-		List<Integer> properties_after = Arrays.asList(21,22,23,24,25,26,27,28,29,30,31);
-        
-		Iterator<Integer> iterProperty_before = properties_before.iterator();
+	// This method is used for checking the OCLR properties p21-p31. Please change the lists if you only want to check subsets of the properties and traces
+	public static void check_after(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
+		List<Integer> properties_after = Arrays.asList(21,22,23,24,25,26,27,28,29,30,31); // properties p21-p31
 		Iterator<Integer> iterProperty_after = properties_after.iterator();
-        
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_before = "../lu.svv.offline/instance/p%d_1000000_%d_before.xmi";
-		String tPathTemp_after = "../lu.svv.offline/instance/p%d_1000000_%d_after.xmi";
-        
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_after = "../lu.svv.offline/instances/p%d_100000_%d_after.xmi";
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
-		while(iterProperty_before.hasNext()){
-			i=0;
-			int propertyNo = iterProperty_before.next();
-		    System.out.println("P"+propertyNo);
-			while(i < 5){
-				Iterator<Integer> iter = iList.iterator();
-				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
-					String pPath = String.format(pPathTemp, propertyNo);
-					String tPath = String.format(tPathTemp_before, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
-				}
-				i++;
-			    System.out.println();
-			}
-		}
 		while(iterProperty_after.hasNext()){
 			i=0;
 			int propertyNo = iterProperty_after.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_after, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
+					rc.loadMonitor(pPath, tPath).check(); //check the property
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -181,80 +134,15 @@ public class OfflineCheck {
 		}
 	}
 
-	public static void check_between_multiple_fixed_number(){
-		List<Integer> iList = Arrays.asList(1,2,3,4);
-		List<Integer> properties_between = Arrays.asList(32,33,34,35);
-
-		Iterator<Integer> iterProperty_between = properties_between.iterator();
-
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_mult_fixed_number.xmi";
-
-		int i = 0;
-		OfflineCheck rc = new OfflineCheck();
-		while(iterProperty_between.hasNext()){
-			i=0;
-			int propertyNo = iterProperty_between.next();
-		    System.out.println("P"+propertyNo);
-			while(i < 5){
-				Iterator<Integer> iter = iList.iterator();
-				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
-					String pPath = String.format(pPathTemp, propertyNo);
-					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
-				}
-				i++;
-			    System.out.println();
-			}
-		}
-	}
-
-	public static void apply_between_multiple_fixed_number(){
-		List<Integer> iList = Arrays.asList(1,2,3,4);
-		List<Integer> properties_between = Arrays.asList(32,33,34,35);
-
-		Iterator<Integer> iterProperty_between = properties_between.iterator();
-
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_mult_fixed_number.xmi";
-
-		int i = 0;
-		OfflineCheck rc = new OfflineCheck();
-		while(iterProperty_between.hasNext()){
-			i=0;
-			int propertyNo = iterProperty_between.next();
-		    System.out.println("P"+propertyNo);
-			while(i < 5){
-				Iterator<Integer> iter = iList.iterator();
-				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
-					String pPath = String.format(pPathTemp, propertyNo);
-					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
-				}
-				i++;
-			    System.out.println();
-			}
-		}
-	}
-
+	// This method is used for checking the OCLR properties p32-p35 on the 'between_mult_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void check_between_multiple_fixed_length(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_between = Arrays.asList(32,33,34,35);
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(32,33,34,35); // properties p32-p35
 
 		Iterator<Integer> iterProperty_between = properties_between.iterator();
 
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_mult_fixed_length.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_mult_fixed_length.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -262,13 +150,150 @@ public class OfflineCheck {
 			i=0;
 			int propertyNo = iterProperty_between.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
+					rc.loadMonitor(pPath, tPath).check(); //check the property
+					long stopTime = System.currentTimeMillis();
+				    long elapsedTime = stopTime - startTime;
+				    System.out.print(elapsedTime/1000.0);
+				    System.out.print('\t');
+				}
+				i++;
+			    System.out.println();
+			}
+		}
+	}
+
+	// This method is used for checking the OCLR properties p32-p35 on the 'between_mult_fixed_number' traces. Please change the lists if you only want to check subsets of the properties and traces
+	public static void check_between_multiple_fixed_number(){
+		List<Integer> iList = Arrays.asList(1,2,3,4); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(32,33,34,35); // properties p32-p35
+
+		Iterator<Integer> iterProperty_between = properties_between.iterator();
+
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_mult_fixed_number.xmi";
+
+		int i = 0;
+		OfflineCheck rc = new OfflineCheck();
+		while(iterProperty_between.hasNext()){
+			i=0;
+			int propertyNo = iterProperty_between.next();
+		    System.out.println("P"+propertyNo);
+			while(i < 5){ // check each property 5 times
+				Iterator<Integer> iter = iList.iterator();
+				while(iter.hasNext()){
+					long startTime = System.currentTimeMillis();
+					String pPath = String.format(pPathTemp, propertyNo);
+					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
+					rc.loadMonitor(pPath, tPath).check(); //check the property
+					long stopTime = System.currentTimeMillis();
+				    long elapsedTime = stopTime - startTime;
+				    System.out.print(elapsedTime/1000.0);
+				    System.out.print('\t');
+				}
+				i++;
+			    System.out.println();
+			}
+		}
+	}
+
+	// This method is used for checking the OCLR properties p36-p38 on the 'between_one_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
+	public static void check_between_one_fixed_length(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(36,37,38); // properties p36-p38
+
+		Iterator<Integer> iterProperty_between = properties_between.iterator();
+
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_one_fixed_length.xmi";
+
+		int i = 0;
+		OfflineCheck rc = new OfflineCheck();
+		while(iterProperty_between.hasNext()){
+			i=0;
+			int propertyNo = iterProperty_between.next();
+		    System.out.println("P"+propertyNo);
+			while(i < 5){ // check each property 5 times
+				Iterator<Integer> iter = iList.iterator();
+				while(iter.hasNext()){
+					long startTime = System.currentTimeMillis();
+					String pPath = String.format(pPathTemp, propertyNo);
+					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
+					rc.loadMonitor(pPath, tPath).check(); //check the property
+					long stopTime = System.currentTimeMillis();
+				    long elapsedTime = stopTime - startTime;
+				    System.out.print(elapsedTime/1000.0);
+				    System.out.print('\t');
+				}
+				i++;
+			    System.out.println();
+			}
+		}
+	}
+
+	// This method is used for checking the OCLR properties p36-p38 on the 'between_one_various_lengths' traces. Please change the lists if you only want to check subsets of the properties and traces
+	public static void check_between_one_various_lengths(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(36,37,38); // properties p36-p38
+
+		Iterator<Integer> iterProperty_between = properties_between.iterator();
+
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_one_various_lengths.xmi";
+
+		int i = 0;
+		OfflineCheck rc = new OfflineCheck();
+		while(iterProperty_between.hasNext()){
+			i=0;
+			int propertyNo = iterProperty_between.next();
+		    System.out.println("P"+propertyNo);
+			while(i < 5){ // check each property 5 times
+				Iterator<Integer> iter = iList.iterator();
+				while(iter.hasNext()){
+					long startTime = System.currentTimeMillis();
+					String pPath = String.format(pPathTemp, propertyNo);
+					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
+					rc.loadMonitor(pPath, tPath).check(); //check the property
+					long stopTime = System.currentTimeMillis();
+				    long elapsedTime = stopTime - startTime;
+				    System.out.print(elapsedTime/1000.0);
+				    System.out.print('\t');
+				}
+				i++;
+			    System.out.println();
+			}
+		}
+	}
+
+	// This method is used for applying the OCLR properties scopes of p13-p20. Please change the lists if you only want to check subsets of the properties and traces
+	public static void apply_before(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_before = Arrays.asList(13,14,15,16,17,18,19,20); // properties p13-p20
+        
+		Iterator<Integer> iterProperty_before = properties_before.iterator();
+        
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_before = "../lu.svv.offline/instances/p%d_1000000_%d_before.xmi";
+        
+		int i = 0;
+		OfflineCheck rc = new OfflineCheck();
+		
+		while(iterProperty_before.hasNext()){
+			i=0;
+			int propertyNo = iterProperty_before.next();
+		    System.out.println("P"+propertyNo);
+			while(i < 5){ // check each property 5 times
+				Iterator<Integer> iter = iList.iterator();
+				while(iter.hasNext()){
+					long startTime = System.currentTimeMillis();
+					String pPath = String.format(pPathTemp, propertyNo);
+					String tPath = String.format(tPathTemp_before, propertyNo, iter.next());
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -280,14 +305,50 @@ public class OfflineCheck {
 		}
 	}
 	
+	// This method is used for applying the OCLR properties scopes of p21-p31. Please change the lists if you only want to check subsets of the properties and traces
+	public static void apply_after(){
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
+		List<Integer> properties_after = Arrays.asList(21,22,23,24,25,26,27,28,29,30,31); // properties p21-p31
+        
+		Iterator<Integer> iterProperty_after = properties_after.iterator();
+        
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_after = "../lu.svv.offline/instances/p%d_1000000_%d_after.xmi";
+        
+		int i = 0;
+		OfflineCheck rc = new OfflineCheck();
+		
+		while(iterProperty_after.hasNext()){
+			i=0;
+			int propertyNo = iterProperty_after.next();
+		    System.out.println("P"+propertyNo);
+			while(i < 5){ // check each property 5 times
+				Iterator<Integer> iter = iList.iterator();
+				while(iter.hasNext()){
+					long startTime = System.currentTimeMillis();
+					String pPath = String.format(pPathTemp, propertyNo);
+					String tPath = String.format(tPathTemp_after, propertyNo, iter.next());
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
+					long stopTime = System.currentTimeMillis();
+				    long elapsedTime = stopTime - startTime;
+				    System.out.print(elapsedTime/1000.0);
+				    System.out.print('\t');
+				}
+				i++;
+			    System.out.println();
+			}
+		}
+	}
+	
+	// This method is used for applying the OCLR properties scopes of p32-p35 on the 'between_mult_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_between_multiple_fixed_length(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_between = Arrays.asList(32,33,34,35);
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(32,33,34,35); // properties p32-p35
 
 		Iterator<Integer> iterProperty_between = properties_between.iterator();
 
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_mult_fixed_length.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_mult_fixed_length.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -295,13 +356,13 @@ public class OfflineCheck {
 			i=0;
 			int propertyNo = iterProperty_between.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -313,14 +374,15 @@ public class OfflineCheck {
 		}
 	}
 
-	public static void check_between_one_fixed_length(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_between = Arrays.asList(36,37,38);
+	// This method is used for applying the OCLR properties scopes of p32-p35 on the 'between_mult_fixed_number' traces. Please change the lists if you only want to check subsets of the properties and traces
+	public static void apply_between_multiple_fixed_number(){
+		List<Integer> iList = Arrays.asList(1,2,3,4); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(32,33,34,35); // properties p32-p35
 
 		Iterator<Integer> iterProperty_between = properties_between.iterator();
 
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_one_fixed_length.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_mult_fixed_number.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -328,13 +390,13 @@ public class OfflineCheck {
 			i=0;
 			int propertyNo = iterProperty_between.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -345,48 +407,16 @@ public class OfflineCheck {
 			}
 		}
 	}
-
-	public static void check_between_one_various_lengths(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9);
-		List<Integer> properties_between = Arrays.asList(34,36,37);
-
-		Iterator<Integer> iterProperty_between = properties_between.iterator();
-
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_one_various_lengths.xmi";
-
-		int i = 0;
-		OfflineCheck rc = new OfflineCheck();
-		while(iterProperty_between.hasNext()){
-			i=0;
-			int propertyNo = iterProperty_between.next();
-		    System.out.println("P"+propertyNo);
-			while(i < 5){
-				Iterator<Integer> iter = iList.iterator();
-				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
-					String pPath = String.format(pPathTemp, propertyNo);
-					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).check();
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
-				}
-				i++;
-			    System.out.println();
-			}
-		}
-	}
-
+	
+	// This method is used for applying the OCLR properties scopes of p36-p38 on the 'between_one_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_between_one_fixed_length(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		List<Integer> properties_between = Arrays.asList(36,37,38);
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(36,37,38); // properties p36-p38
 
 		Iterator<Integer> iterProperty_between = properties_between.iterator();
 
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_one_fixed_length.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_one_fixed_length.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -394,13 +424,13 @@ public class OfflineCheck {
 			i=0;
 			int propertyNo = iterProperty_between.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 6){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
@@ -412,14 +442,15 @@ public class OfflineCheck {
 		}
 	}
 
+	// This method is used for applying the OCLR properties scopes of p36-p38 on the 'between_one_various_lengths' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_between_one_various_lengths(){
-		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9);
-		List<Integer> properties_between = Arrays.asList(36,37,38);
+		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
+		List<Integer> properties_between = Arrays.asList(36,37,38); // properties p36-p38
 
 		Iterator<Integer> iterProperty_between = properties_between.iterator();
 
-		String pPathTemp = "../lu.svv.offline/instance/p%d.xmi";
-		String tPathTemp_between = "../lu.svv.offline/instance/p%d_100000_%d_between_one_various_lengths.xmi";
+		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
+		String tPathTemp_between = "../lu.svv.offline/instances/p%d_100000_%d_between_one_various_lengths.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -427,13 +458,13 @@ public class OfflineCheck {
 			i=0;
 			int propertyNo = iterProperty_between.next();
 		    System.out.println("P"+propertyNo);
-			while(i < 5){
+			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
 					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
-					rc.loadMonitor(pPath, tPath).evaluate_applyscope();
+					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
 					long stopTime = System.currentTimeMillis();
 				    long elapsedTime = stopTime - startTime;
 				    System.out.print(elapsedTime/1000.0);
