@@ -34,14 +34,18 @@
         <h1>
 <a name="welcome-to-oclr-check" class="anchor" href="#welcome-to-oclr-check"><span class="octicon octicon-link"></span></a>Welcome to OCLR-Check</h1>
 
-<p>OCLR-Check is a toolset to perform offline checking of <em>OCLR</em> properties on system execution traces. The toolset has been developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>), at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>). 
+<p>OCLR-Check is a toolset to perform offline checking of <em>OCLR</em> properties on system execution traces. The toolset has been developed by Wei Dou (<a href="http://people.svv.lu/dou">http://people.svv.lu/dou</a>), at the SVV lab (<a href="http://www.svv.lu">http://www.svv.lu</a>) of the University of Luxembourg (<a href="http://wwwen.uni.lu">http://wwwen.uni.lu</a>).
 More information on OCLR-Check is available in this technical report:</p>
 
+<blockquote>
 <p>Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>A model-based approach to trace checking of temporal properties with OCL</strong>. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014.  Available online at <a href="http://hdl.handle.net/10993/16112">http://hdl.handle.net/10993/16112</a></p>
+</blockquote>
 
-<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using property specification patterns (<a href="http://patterns.projects.cis.ksu.edu">http://patterns.projects.cis.ksu.edu</a>). <em>OCLR</em> has been introduced in this paper: </p>
+<p><em>OCLR</em> is a temporal extension of OCL (Object Constraint Language, <a href="http://www.omg.org/spec/OCL">http://www.omg.org/spec/OCL</a>) which allows users to express temporal properties using property specification patterns (<a href="http://patterns.projects.cis.ksu.edu">http://patterns.projects.cis.ksu.edu</a>). <em>OCLR</em> has been introduced in this paper:</p>
 
+<blockquote>
 <p>Wei Dou, Domenico Bianculli, and Lionel Briand. <strong>OCLR: a more expressive, pattern-based temporal extension of OCL</strong>. In Proceedings of the 2014 European Conference on Modelling Foundations and Applications (ECMFA 2014), York, United Kingdom, volume 8569 of Lecture Notes in Computer Science, pages 51-66. Springer, July 2014. Available online  at <a href="http://dx.doi.org/10.1007/978-3-319-09195-2_4">http://dx.doi.org/10.1007/978-3-319-09195-2_4</a></p>
+</blockquote>
 
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
@@ -64,8 +68,8 @@ More information on OCLR-Check is available in this technical report:</p>
 <ul>
 <li>In the <em>main</em> folder, <em>OfflineCheck.java</em> is the main program for checking <em>OCLR</em> properties. The other Java program <em>ConstraintFactory.java</em> is an auxiliary class for building OCL constraints and/or queries.</li>
 <li>The <em>models</em> folder contains three Ecore models: a <em>trace</em> model, an <em>OCLR</em> meta model, and a <em>check</em> model. By using the three models, we generate the corresponding Java code and check the traces with our <em>checker</em> programs.</li>
-<li>the <em>DSLs</em> folder contains  the Xtext definitions (<em>Trace.xtext</em> and <em>Oclr.xtext</em>) of the trace model and of the <em>OCLR</em> meta model. It also contains the programs for building XMI instances of the two models.</li>
-<li>The <em>oclr2ocl</em> folder contains the definition of the  translation  that maps <em>OCLR</em> constraints into OCL constraints on the trace model.</li>
+<li>the <em>DSLs</em> folder contains the Xtext definitions (<em>Trace.xtext</em> and <em>Oclr.xtext</em>) of the trace model and of the <em>OCLR</em> meta model. It also contains the programs for building XMI instances of the two models.</li>
+<li>The <em>oclr2ocl</em> folder contains the definition of the translation that maps <em>OCLR</em> constraints into OCL constraints on the trace model.</li>
 </ul><h3>
 <a name="evaluation" class="anchor" href="#evaluation"><span class="octicon octicon-link"></span></a>Evaluation</h3>
 
@@ -77,24 +81,24 @@ More information on OCLR-Check is available in this technical report:</p>
 <h5>
 <a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>Properties</h5>
 
-<p>We provide 38 <em>OCLR</em> properties, both as DSL specifications and as XMI instances conforming to the <em>OCLR</em> meta model. These XMI instances are generated from the DSL specifications by using the program: "/checker/DSLs/OCLRInstanceFactory.java".</p>
+<p>We provide 38 <em>OCLR</em> properties, both as DSL specifications (under the <em>OCLR-DSL-specifications</em> folder) and as XMI instances (under the <em>OCLR-XMI-instances</em> folder) conforming to the <em>OCLR</em> meta model. These XMI instances are generated from the DSL specifications by using the program: "/checker/DSLs/OCLRInstanceFactory.java".</p>
 </li>
 <li>
 <h5>
 <a name="traces" class="anchor" href="#traces"><span class="octicon octicon-link"></span></a>Traces</h5>
 
-<p>For each property to check, we provide several traces. These traces are grouped by property scopes - <em>globally</em> (p1-p12), <em>before</em> (p13-p20), <em>after</em> (p21-p31), <em>between-and</em> (p32-38).</p>
+<p>For each property to check, we provide several traces both in CSV (for public use, under the <em>CSV</em> foler) and XMI formats (under the <em>XMI</em> folder). The XMI traces are generated by the trace generators introduced below, and the CSV traces are transformed from the XMI ones. For the reason of maximum file size limit in GitHub, we zip up the XMI files and group them by property scopes: <code>globally</code> (p1-p12), <code>before</code> (p13-p20), <code>after</code> (p21-p31), <code>between-and</code> (p32-38).</p>
 </li>
 <li>
 <h5>
 <a name="trace-generators" class="anchor" href="#trace-generators"><span class="octicon octicon-link"></span></a>Trace Generators</h5>
 
-<p>Traces generator programs implement various generation strategies, depending on the type of property that one wants to check on the trace being generated. 
-Generators are Python programs named after the type of property for which they generate traces;  e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <em>globally</em> scope. 
-A trace generator needs 4 parameters: 1). scope. 2). pattern. 3). property id. 4). (maximum) trace length. For instance:
+<p>Traces generator programs implement various generation strategies, depending on the type of property that one wants to check on the trace being generated.
+Generators are Python programs named after the type of property for which they generate traces;  e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <code>globally</code> scope.
+A trace generator needs 4 parameters: 1). scope (<code>--scope/-s SCOPE</code>). 2). pattern (<code>--pattern/-p PATTERN</code>). 3). property id (<code>--id/-i ID</code>). 4). (maximum) trace length (<code>--length/-l LENGTH</code>). For instance:
 <code>./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000</code>
-corresponds to generating traces for the property <code>globally always a</code> with various trace lengths: 100K, 200K, ..., 1M.
-We also provide the shell scripts used to generate the traces for the 38 properties contained in the distribution. </p>
+corresponds to generating traces with various trace lengths - 100K, 200K, ..., 1M (determined by the given maximum trace length) for the property <code>p1</code> which has the scope <code>globally</code> and the pattern <code>always a</code>.
+We also provide the shell scripts used to generate the traces for the 38 properties contained in the distribution.</p>
 </li>
 </ul><h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
