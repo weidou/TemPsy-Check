@@ -47,4 +47,74 @@ A trace generator needs 4 parameters: 1). scope (```--scope/-s SCOPE```). 2). pa
 We also provide the shell scripts used to generate the traces for the 38 properties contained in the distribution.
 
 #Usage
-To run the OCLR-Check main program, you have to build a Java project in Xtext, and generate Java code with the models. Once the project is ready, you need to add the *OCLR* translation and the main programs into the project, you may need to change the package names in these codes to adapt the new environment.
+Please follow the steps below to set up the environment for the trace checker.
+
+1. Create a new Java Project named "lu.svv.offline" and click __Finish__ (Please use this name, otherwise, you have to modify the codes).
+
+  ![screenshot1](http://i58.tinypic.com/2ilzbir.jpg)
+2. Copy the folder "/check/models/" (in this repository) to the Java project.
+
+  ![screenshot2](http://i60.tinypic.com/2s7uzh4.jpg)
+3. Choose the file "check.ecore" in Eclipse and then create an __EMF Generator Model__ named "check.genmodel" by following the steps below.
+
+  ![screenshot3](http://i59.tinypic.com/2pqt8wo.jpg)
+
+  ![screenshot4](http://i60.tinypic.com/fjfbqx.jpg)
+
+  Choose __Ecore model__ and click __Next__.
+
+  ![screenshot5](http://i62.tinypic.com/zv75hw.jpg)
+
+  Load the model "check.ecore" and click __Next__.
+
+  ![screenshot6](http://i59.tinypic.com/2py6ki0.jpg)
+
+  Click __Select All__ at the upper right and click __Finish__.
+
+  ![screenshot7](http://i61.tinypic.com/2hqb612.jpg)
+
+4. Open "check.genmodel" with the __EMF Generator__, choose the second "Check", and make the following changes.
+
+  ![screenshot8](http://i59.tinypic.com/120grpv.jpg)
+
+  Open the __Properties__ view from the Menu (__Window > Show View > Properties__) and fill the __Base Package__ with "lu.svv.offline".
+
+  ![screenshot9](http://i57.tinypic.com/x1avdy.jpg)
+
+  Choose "Trace" in "check.genmodel" and fill the __Base Package__ with "lu.svv.offline".
+
+  ![screenshot10](http://i58.tinypic.com/2dkmnir.jpg)
+
+  Choose "Oclr" in "check.genmodel" and fill the __Base Package__ with "lu.svv.offline".
+
+  ![screenshot11](http://i59.tinypic.com/2iw97hh.jpg)
+
+5. Choose the first "Check" and right-click on it. Choose __Generate Model Code__ from the pop-up menu.
+
+  ![screenshot12](http://i61.tinypic.com/2v169gx.jpg)
+
+6. Once generating the model code, copy the two files under "/checker/main/" (in this repository) to the Eclipse package "/src/lu.svv.offline.check/".
+
+  ![screenshot13](http://i60.tinypic.com/fwojux.jpg)
+
+  If you find errors about missing packages in the Java files, open the files, click on the errors and choose the last option __Fix project setup...__. The missing packages will be added into the __Plug-in Dependencies__.
+
+  ![screenshot14](http://i59.tinypic.com/10ege2f.jpg)
+
+7. Create a new folder named "lib" in the project and copy the file "/checker/oclr2ocl/oclr.ocl" (in this repository) to the new folder "lib".
+
+  ![screenshot15](http://i62.tinypic.com/14y0jg1.jpg)
+
+  You may get errors if you open "oclr.ocl" with the __CompletOCL Editor__. The OCL codes are correct. It is just because the editor cannot identify the models elements in the code. (If you uncomment the three lines at the top of the file, errors will disappear. But please comment these three lines, otherwise the checker programs will not work).
+
+  ![screenshot16](http://i58.tinypic.com/28co9lg.jpg)
+
+8. Create a new folder named "instances" in the project and copy the properties you'd like to test under the folder "/evaluation/properties/OCLR-XMI-instances" (in this repository) and the corresponding traces under the folder "/evaluation/traces/XMI/" (You need to unzip the files to get traces).
+
+  ![screenshot17](http://i61.tinypic.com/6f147q.jpg)
+
+9. You will see the project like this (The error of the project is from the ocl file. Please ignore it):
+
+  ![screenshot18](http://i59.tinypic.com/246m4v7.jpg)
+
+10. Please invoke the test methods in the *main* method of "OfflineCheck.java". The usage of the methods are embedded in the code comments.
