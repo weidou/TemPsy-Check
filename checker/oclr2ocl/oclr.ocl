@@ -1,6 +1,6 @@
---import 'platform:/resource/lu.svv.offline/model/oclr.ecore#/'
---import 'platform:/resource/lu.svv.offline/model/trace.ecore#/'
---import 'platform:/resource/lu.svv.offline/model/check.ecore#/'
+--import 'platform:/resource/lu.svv.offline/models/oclr.ecore#/'
+--import 'platform:/resource/lu.svv.offline/models/trace.ecore#/'
+--import 'platform:/resource/lu.svv.offline/models/check.ecore#/'
 
 package check
 

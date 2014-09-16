@@ -269,9 +269,9 @@ class RandomTraceGenerator(object):
       # open files
       self.open_file()
       # write trace file header
-      self.f.writelines("<?xml version=\"1.0\" encoding=\"ASCII\"?>\n<trace:Trace xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:trace=\"http://www.svv.lu/runtime/trace/Trace\">\n")
+      self.f.writelines("<?xml version=\"1.0\" encoding=\"ASCII\"?>\n<trace:Trace xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:trace=\"http://www.svv.lu/offline/trace/Trace\">\n")
       # write globally trace file header
-      self.f_globally.writelines("<?xml version=\"1.0\" encoding=\"ASCII\"?>\n<trace:Trace xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:trace=\"http://www.svv.lu/runtime/trace/Trace\">\n")
+      self.f_globally.writelines("<?xml version=\"1.0\" encoding=\"ASCII\"?>\n<trace:Trace xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:trace=\"http://www.svv.lu/offline/trace/Trace\">\n")
       # write trace locations file header
       self.bf.writelines("length: %d\n" % self.length)
       # generate an event trace accorrding to the temporal property containing a scope and a pattern
