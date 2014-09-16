@@ -48,8 +48,8 @@ def: atLeastBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:In
 --return the scope of 'before [n] eventName at least timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | toTimeStamp - timeDistance >= elem.timestamp.quantity) 
+  let toTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | toTimeStamp - timeDistance >= elem.timestamp.value) 
 else
   OrderedSet{}
 endif
@@ -58,8 +58,8 @@ def: atMostBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Int
 --return the scope of 'before [n] eventName at most timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | toTimeStamp - timeDistance <= elem.timestamp.quantity and toTimeStamp >= elem.timestamp.quantity)
+  let toTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | toTimeStamp - timeDistance <= elem.timestamp.value and toTimeStamp >= elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -68,8 +68,8 @@ def: exactlyBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:In
 --return the scope of 'before [n] eventName exactly timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let toTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | toTimeStamp - timeDistance = elem.timestamp.quantity)
+  let toTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | toTimeStamp - timeDistance = elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -79,7 +79,7 @@ def: applyScopeBefore(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::T
 --'boundary' : '[n] eventName [comparingOperator timeDistance tu]'
 let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
 if boundary.timeDistance->notEmpty() then
-  let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.quantity in
+  let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.value in
   if boundary.ordinal->notEmpty() then
     let n:Integer = boundary.ordinal in
     if oclr::ComparingOperator::ATLEAST = comparingOperator then
@@ -115,8 +115,8 @@ def: atLeastAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Int
 --return the scope of 'after [n] eventName at least timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | fromTimeStamp + timeDistance <= elem.timestamp.quantity)
+  let fromTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | fromTimeStamp + timeDistance <= elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -125,8 +125,8 @@ def: atMostAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Inte
 --return the scope of 'after [n] eventName at most timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | fromTimeStamp <= elem.timestamp.quantity and fromTimeStamp + timeDistance >= elem.timestamp.quantity)
+  let fromTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | fromTimeStamp <= elem.timestamp.value and fromTimeStamp + timeDistance >= elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -135,8 +135,8 @@ def: exactlyAfter(trace:OrderedSet(trace::TraceElement), eventName:String, n:Int
 --return the scope of 'after [n] eventName exactly timeDistance tu'
 let position:Integer = ordinalIndexOf(trace, eventName, n) in
 if -1 <> position then
-  let fromTimeStamp:Integer = trace->at(position).timestamp.quantity in 
-  trace->select(elem | fromTimeStamp + timeDistance = elem.timestamp.quantity)
+  let fromTimeStamp:Integer = trace->at(position).timestamp.value in 
+  trace->select(elem | fromTimeStamp + timeDistance = elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -146,7 +146,7 @@ def: applyScopeAfter(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::Tr
 --'boundary' : '[n] eventName [comparingOperator timeDistance tu]'
 let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
 if boundary.timeDistance->notEmpty() then
-  let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.quantity in
+  let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.value in
   if boundary.ordinal->notEmpty() then
       let n:Integer = boundary.ordinal in
     if oclr::ComparingOperator::ATLEAST = comparingOperator then
@@ -180,8 +180,8 @@ def: specialBetweenAnd(trace:OrderedSet(trace::TraceElement), eventNameBegin:Str
 --return the scope of 'between nBegin eventNameBegin at least timeDistanceBegin tu and nBegin eventNameEnd at least timeDistanceEnd tu'
 let fromIndex:Integer = ordinalIndexOf(trace, eventNameBegin, nBegin), toIndex:Integer = ordinalIndexOf(trace, eventNameEnd, nEnd, fromIndex) in
 if -1 <> fromIndex and -1 <> toIndex then
-  let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity, toTimeStamp:Integer = trace->at(toIndex).timestamp.quantity in
-  trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= elem.timestamp.quantity)
+  let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.value, toTimeStamp:Integer = trace->at(toIndex).timestamp.value in
+  trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.value and toTimeStamp - timeDistanceEnd >= elem.timestamp.value)
 else
   OrderedSet{}
 endif
@@ -207,8 +207,8 @@ def: generalBetweenAnd(trace:OrderedSet(trace::TraceElement), eventNameBegin:Str
 let boundaries:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.getBetweenAndBoundaries(trace, eventNameBegin, eventNameEnd) in
 boundaries->subOrderedSet(2, boundaries->size())->iterate(
   elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement); result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{} |
-  let fromTimeStamp:Integer = elem.fromEvent.timestamp.quantity, toTimeStamp:Integer = elem.toEvent.timestamp.quantity in
-  result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.quantity))
+  let fromTimeStamp:Integer = elem.fromEvent.timestamp.value, toTimeStamp:Integer = elem.toEvent.timestamp.value in
+  result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.value and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.value))
 )
 
 def: applyScopeBetweenAnd(trace:trace::Trace, scope:oclr::Scope):Sequence(OrderedSet(trace::TraceElement)) = 
@@ -216,9 +216,9 @@ def: applyScopeBetweenAnd(trace:trace::Trace, scope:oclr::Scope):Sequence(Ordere
 --i.e., 'between [nBegin] eventNameBegin [at least timeDistanceBegin] and [nEnd] eventNameEnd [at least timeDistanceEnd]'
 let boundaryBegin:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryBegin, boundaryEnd:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryEnd, eventNameBegin:String = boundaryBegin.event.name, eventNameEnd:String = boundaryEnd.event.name in
 if boundaryBegin.timeDistance->notEmpty() then
-  let timeDistanceBegin:Integer = boundaryBegin.timeDistance.quantity in 
+  let timeDistanceBegin:Integer = boundaryBegin.timeDistance.value in 
   if boundaryEnd.timeDistance->notEmpty() then
-    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
     if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
       if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
@@ -255,7 +255,7 @@ if boundaryBegin.timeDistance->notEmpty() then
   endif
 else
   if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
-    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
     if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
       if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
@@ -297,12 +297,12 @@ def: specialAfterUntil(trace:OrderedSet(trace::TraceElement), eventNameBegin:Str
 --return the scope of 'after nBegin eventNameBegin at least timeDistanceBegin tu until nBegin eventNameEnd at least timeDistanceEnd tu'
 let fromIndex:Integer = self.ordinalIndexOf(trace, eventNameBegin, nBegin), toIndex:Integer = self.ordinalIndexOf(trace, eventNameEnd, nEnd, fromIndex) in
 if -1 <> fromIndex and -1 = toIndex then
-  let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity in
-  trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity)
+  let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.value in
+  trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.value)
 else
   if -1 <> fromIndex and -1 <> toIndex then
-    let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.quantity, toTimeStamp:Integer = trace->at(toIndex).timestamp.quantity in
-    trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= elem.timestamp.quantity)
+    let fromTimeStamp:Integer = trace->at(fromIndex).timestamp.value, toTimeStamp:Integer = trace->at(toIndex).timestamp.value in
+    trace->select(elem | fromTimeStamp + timeDistanceBegin <= elem.timestamp.value and toTimeStamp - timeDistanceEnd >= elem.timestamp.value)
   else
     OrderedSet{}
   endif
@@ -336,11 +336,11 @@ def: generalAfterUntil(trace:OrderedSet(trace::TraceElement), eventNameBegin:Str
 let boundaries:OrderedSet(Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement)) = self.getAfterUntilBoundaries(trace, eventNameBegin, eventNameEnd) in
 boundaries->subOrderedSet(2, boundaries->size())->iterate(
   elem:Tuple(fromEvent:trace::TraceElement, toEvent:trace::TraceElement); result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{} |
-  let fromTimeStamp:Integer = elem.fromEvent.timestamp.quantity, toTimeStamp:Integer = elem.toEvent.timestamp.quantity in
+  let fromTimeStamp:Integer = elem.fromEvent.timestamp.value, toTimeStamp:Integer = elem.toEvent.timestamp.value in
   if trace->size() = elem.toEvent.index and trace->last().event.name <> eventNameEnd then
-    result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity))
+    result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.value))
   else
-    result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.quantity and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.quantity))
+    result->append(trace->select(traceElem:trace::TraceElement | fromTimeStamp + timeDistanceBegin <= traceElem.timestamp.value and toTimeStamp - timeDistanceEnd >= traceElem.timestamp.value))
   endif
 )
 
@@ -349,9 +349,9 @@ def: applyScopeAfterUntil(trace:trace::Trace, scope:oclr::Scope):Sequence(Ordere
 --i.e., 'after [nBegin] eventNameBegin [at least timeDistanceBegin] until [nEnd] eventNameEnd [at least timeDistanceEnd]'
 let boundaryBegin:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryBegin, boundaryEnd:oclr::Boundary = scope.oclAsType(oclr::BiScope).boundaryEnd, eventNameBegin:String = boundaryBegin.event.name, eventNameEnd:String = boundaryEnd.event.name in
 if boundaryBegin.timeDistance->notEmpty() then
-  let timeDistanceBegin:Integer = boundaryBegin.timeDistance.quantity in
+  let timeDistanceBegin:Integer = boundaryBegin.timeDistance.value in
   if boundaryEnd.timeDistance->notEmpty() then
-    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
     if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
@@ -390,7 +390,7 @@ if boundaryBegin.timeDistance->notEmpty() then
     endif
   endif
 else if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
-    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.quantity in
+    let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
     if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
@@ -463,12 +463,12 @@ else
             Tuple{
               match:Boolean = chainElem.timeDistance->notEmpty() implies (
                   if oclr::ComparingOperator::ATLEAST = chainElem.timeDistance.comparingOperator then
-                    chainElem.timeDistance.quantity <= nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+                    chainElem.timeDistance.value <= nextElem.timestamp.value - iter.latestEvent.timestamp.value
                   else (
                     if oclr::ComparingOperator::ATMOST = chainElem.timeDistance.comparingOperator then
-                      chainElem.timeDistance.quantity >= nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+                      chainElem.timeDistance.value >= nextElem.timestamp.value - iter.latestEvent.timestamp.value
                     else              
-                      chainElem.timeDistance.quantity = nextElem.timestamp.quantity - iter.latestEvent.timestamp.quantity
+                      chainElem.timeDistance.value = nextElem.timestamp.value - iter.latestEvent.timestamp.value
                     endif
                   )
                   endif
@@ -528,12 +528,12 @@ else
           Tuple{satisfaction:Boolean=(iter.indexOfLastMatchedEffect < elem.fromEvent.index and 
             (orderPattern.timeDistance->notEmpty() implies 
                 if oclr::ComparingOperator::ATLEAST = orderPattern.timeDistance.comparingOperator then
-                orderPattern.timeDistance.quantity <= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                orderPattern.timeDistance.value <= firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
               else
                 if oclr::ComparingOperator::ATMOST = orderPattern.timeDistance.comparingOperator then
-                  orderPattern.timeDistance.quantity >= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                  orderPattern.timeDistance.value >= firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
                 else
-                  orderPattern.timeDistance.quantity = firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                  orderPattern.timeDistance.value = firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
                 endif
               endif
             )), indexOfLastMatchedEffect:Integer=matchedEffect.toEvent.index
@@ -573,12 +573,12 @@ else
           else
             Tuple{match:Boolean = (chainElem.timeDistance->notEmpty() implies
               (if oclr::ComparingOperator::ATLEAST = chainElem.timeDistance.comparingOperator then
-                chainElem.timeDistance.quantity <= iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+                chainElem.timeDistance.value <= iter.latestEvent.timestamp.value - previousElem.timestamp.value
               else
                 if oclr::ComparingOperator::ATMOST = chainElem.timeDistance.comparingOperator then
-                  chainElem.timeDistance.quantity >= iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+                  chainElem.timeDistance.value >= iter.latestEvent.timestamp.value - previousElem.timestamp.value
                 else
-                  chainElem.timeDistance.quantity = iter.latestEvent.timestamp.quantity - previousElem.timestamp.quantity
+                  chainElem.timeDistance.value = iter.latestEvent.timestamp.value - previousElem.timestamp.value
                 endif
               endif)), latestEvent = previousElem
             }
@@ -614,12 +614,12 @@ else
           Tuple{satisfaction:Boolean=(iter.indexOfLastMatchedEffect < matchedCause.fromEvent.index and 
             (orderPattern.timeDistance->notEmpty() implies
               if oclr::ComparingOperator::ATLEAST = orderPattern.timeDistance.comparingOperator then
-                orderPattern.timeDistance.quantity <= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                orderPattern.timeDistance.value <= firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
               else
                 if oclr::ComparingOperator::ATMOST = orderPattern.timeDistance.comparingOperator then
-                  orderPattern.timeDistance.quantity >= firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                  orderPattern.timeDistance.value >= firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
                 else
-                  orderPattern.timeDistance.quantity = firstOfMatchedEffect.timestamp.quantity - lastOfMatchedCause.timestamp.quantity
+                  orderPattern.timeDistance.value = firstOfMatchedEffect.timestamp.value - lastOfMatchedCause.timestamp.value
                 endif
               endif)), indexOfLastMatchedEffect:Integer=elem.toEvent.index
            }
