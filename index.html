@@ -89,13 +89,13 @@ the <em>OCLR</em> properties and the trace generators used to generate the trace
 
 <p>Traces generator programs implement various generation strategies, depending on the type of property that one wants to check on the trace being generated.
 Generators are Python programs named after the type of property for which they generate traces;  e.g., <em>trace_generator_globally.py</em> is the trace generator to generate the trace for the properties with the <code>globally</code> scope.
-A trace generator needs 4 parameters: </p>
+A trace generator needs 4 parameters:</p>
 
 <ol>
 <li>scope (<code>--scope/-s SCOPE</code>);</li>
 <li>pattern (<code>--pattern/-p PATTERN</code>);</li>
 <li>property id (<code>--id/-i ID</code>);</li>
-<li>(maximum) trace length (<code>--length/-l LENGTH</code>). 
+<li>(maximum) trace length (<code>--length/-l LENGTH</code>).
 For instance:
 <code>./trace_generator_globally.py -s 'globally' -p  'always a' -i p1 -l 1000000</code>
 corresponds to generating traces with various trace lengths - 100K, 200K, ..., 1M (determined by the given maximum trace length) for the property with id <code>p1</code> which has the scope <code>globally</code> and the pattern <code>always a</code>.
@@ -111,91 +111,9 @@ We also provide the shell scripts used to generate the traces for the 38 propert
 <h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
 
-<p>Please follow the steps below to set up the environment for the trace checker.</p>
+<p>Please read the <a href="https://github.com/weidou/OCLR-Check/wiki/Usage">usage guide on the Wiki</a>.</p>
 </li>
-</ul><ol>
-<li>
-<p>Create a new Java Project named "lu.svv.offline" and click <strong>Finish</strong> (Please use this name, otherwise, you have to modify the code).</p>
-
-<p><img src="http://i58.tinypic.com/2ilzbir.jpg" alt="screenshot1"></p>
-</li>
-<li>
-<p>Copy the folder "/check/models/" (in this repository) to the Java project.</p>
-
-<p><img src="http://i60.tinypic.com/2s7uzh4.jpg" alt="screenshot2"></p>
-</li>
-<li>
-<p>Choose the file "check.ecore" in Eclipse and then create an <strong>EMF Generator Model</strong> named "check.genmodel" by following the steps below.</p>
-
-<p><img src="http://i59.tinypic.com/2pqt8wo.jpg" alt="screenshot3"></p>
-
-<p><img src="http://i60.tinypic.com/fjfbqx.jpg" alt="screenshot4"></p>
-
-<p>Choose <strong>Ecore model</strong> and click <strong>Next</strong>.</p>
-
-<p><img src="http://i62.tinypic.com/zv75hw.jpg" alt="screenshot5"></p>
-
-<p>Load the model "check.ecore" and click <strong>Next</strong>.</p>
-
-<p><img src="http://i59.tinypic.com/2py6ki0.jpg" alt="screenshot6"></p>
-
-<p>Click <strong>Select All</strong> at the upper right and click <strong>Finish</strong>.</p>
-
-<p><img src="http://i61.tinypic.com/2hqb612.jpg" alt="screenshot7"></p>
-</li>
-<li>
-<p>Open "check.genmodel" with the <strong>EMF Generator</strong>, choose the second, nested occurrence of "Check"</p>
-
-<p><img src="http://i59.tinypic.com/120grpv.jpg" alt="screenshot8"></p>
-
-<p>and make the following changes.
-Open the <strong>Properties</strong> view from the Menu (<strong>Window &gt; Show View &gt; Properties</strong>) and fill the <strong>Base Package</strong> with "lu.svv.offline".</p>
-
-<p><img src="http://i57.tinypic.com/x1avdy.jpg" alt="screenshot9"></p>
-
-<p>Choose "Trace" in "check.genmodel" and fill the <strong>Base Package</strong> with "lu.svv.offline".</p>
-
-<p><img src="http://i58.tinypic.com/2dkmnir.jpg" alt="screenshot10"></p>
-
-<p>Choose "Oclr" in "check.genmodel" and fill the <strong>Base Package</strong> with "lu.svv.offline".</p>
-
-<p><img src="http://i59.tinypic.com/2iw97hh.jpg" alt="screenshot11"></p>
-</li>
-<li>
-<p>Choose the first (outer) "Check" instance and right-click on it. Choose <strong>Generate Model Code</strong> from the pop-up menu.</p>
-
-<p><img src="http://i61.tinypic.com/2v169gx.jpg" alt="screenshot12"></p>
-</li>
-<li>
-<p>Once generating the model code, copy the two files under "/checker/main/" (in this repository) to the Eclipse package "/src/lu.svv.offline.check/".</p>
-
-<p><img src="http://i60.tinypic.com/fwojux.jpg" alt="screenshot13"></p>
-
-<p>If you find errors about missing packages in the Java files, open the files, click on the errors and choose the last option <strong>Fix project setup...</strong>. The missing packages will be added into the <strong>Plug-in Dependencies</strong>.</p>
-
-<p><img src="http://i59.tinypic.com/10ege2f.jpg" alt="screenshot14"></p>
-</li>
-<li>
-<p>Create a new folder named "lib" in the project and copy the file "/checker/oclr2ocl/oclr.ocl" (in this repository) to the new folder "lib".</p>
-
-<p><img src="http://i62.tinypic.com/14y0jg1.jpg" alt="screenshot15"></p>
-
-<p>You may get errors if you open "oclr.ocl" with the <strong>CompletOCL Editor</strong>. The OCL code is correct; however, the editor cannot identify the models elements in the code. (If you uncomment the three lines at the top of the file, errors will disappear. However, keep these three lines commented, otherwise the checker programs will not work).</p>
-
-<p><img src="http://i58.tinypic.com/28co9lg.jpg" alt="screenshot16"></p>
-</li>
-<li>
-<p>Create a new folder named "instances" in the project and copy the properties you'd like to test under the folder "/evaluation/properties/OCLR-XMI-instances"  and the corresponding traces under the folder "/evaluation/traces/XMI/" (You need to unzip the files to get traces).</p>
-
-<p><img src="http://i61.tinypic.com/6f147q.jpg" alt="screenshot17"></p>
-</li>
-<li>
-<p>The project will look like this (The error of the project is from the OCL file. Please ignore it):</p>
-
-<p><img src="http://i59.tinypic.com/246m4v7.jpg" alt="screenshot18"></p>
-</li>
-<li><p>Invoke the test methods in the <em>main</em> method of "OfflineCheck.java". The usage of the methods is explained in the code comments.</p></li>
-</ol>
+</ul>
       </section>
     </div>
 
