@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
-  <oclrExpressions name="P8">
+  <oclrExpressions name="P5">
     <scope xsi:type="oclr:Globally"/>
     <pattern xsi:type="oclr:OrderPattern" patternType="responding">
       <block1>

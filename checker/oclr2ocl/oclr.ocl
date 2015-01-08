@@ -514,7 +514,7 @@ endif
 
 def: checkPatternResponse(subtrace:OrderedSet(trace::TraceElement), pattern:oclr::Pattern):Boolean =
 --check the satisfiability of the response pattern 'effect responding cause'
---in the first event in the chain 'effect', it may contains time distance to the last event in the chain 'cause'
+--in the first event in the chain 'effect', it may contain time distance to the last event in the chain 'cause'
 if subtrace->isEmpty() then
   true
 else
