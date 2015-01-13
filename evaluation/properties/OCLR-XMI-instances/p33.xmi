@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ASCII"?>
-<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/offline/oclr/Oclr">
   <oclrExpressions name="P33">
     <scope xsi:type="oclr:BiScope" scopeType="and">
       <boundaryBegin>
         <event name="a"/>
-        <timeDistance quantity="1000"/>
+        <timeDistance value="1000"/>
       </boundaryBegin>
       <boundaryEnd>
         <event name="b"/>
-        <timeDistance quantity="1000"/>
+        <timeDistance value="1000"/>
       </boundaryEnd>
     </scope>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="never">

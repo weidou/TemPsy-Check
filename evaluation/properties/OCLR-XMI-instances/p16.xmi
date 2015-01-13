@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/runtime/oclr/Oclr">
+<oclr:OCLRConstraint xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oclr="http://www.svv.lu/offline/oclr/Oclr">
   <oclrExpressions name="P16">
     <scope xsi:type="oclr:UniScope" scopeType="before">
       <boundary>
@@ -10,7 +10,7 @@
       <block1>
         <event name="c"/>
       </block1>
-      <timeDistance comparingOperator="at most" quantity="3000"/>
+      <timeDistance comparingOperator="at most" value="3000"/>
       <block2>
         <event name="a"/>
       </block2>
