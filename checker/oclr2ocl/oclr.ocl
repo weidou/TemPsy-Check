@@ -32,7 +32,7 @@ let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | eventName 
 if eventTrace->isEmpty() or eventTrace->size() < n then
   -1
 else
-  eventTrace->at(n).index
+  eventTrace->at(n.abs()).index
 endif
 
 def: ordinalIndexOf(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, indexBegin:Integer):Integer =
@@ -41,7 +41,7 @@ let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | indexBegin
 if eventTrace->isEmpty() or eventTrace->size() < n then
   -1
 else
-  eventTrace->at(n).index
+  eventTrace->at(n.abs()).index
 endif
 
 def: atLeastBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
