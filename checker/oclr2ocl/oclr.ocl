@@ -29,19 +29,19 @@ endif
 def: ordinalIndexOf(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer):Integer =
 --find the index of the [n]th occurrence of the event 'eventName'
 let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | eventName = elem.event.name) in
-if eventTrace->isEmpty() or eventTrace->size() < n then
+if eventTrace->isEmpty() or eventTrace->size() < n or n < 1 then
   -1
 else
-  eventTrace->at(n.abs()).index
+  eventTrace->at(n).index
 endif
 
 def: ordinalIndexOf(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, indexBegin:Integer):Integer =
 --find the index of the [n]th occurrence of the event 'eventName'
 let eventTrace:OrderedSet(trace::TraceElement) = trace->select(elem | indexBegin <= elem.index and eventName = elem.event.name) in
-if eventTrace->isEmpty() or eventTrace->size() < n then
+if eventTrace->isEmpty() or eventTrace->size() < n or n < 1 then
   -1
 else
-  eventTrace->at(n.abs()).index
+  eventTrace->at(n).index
 endif
 
 def: atLeastBefore(trace:OrderedSet(trace::TraceElement), eventName:String, n:Integer, timeDistance:Integer):OrderedSet(trace::TraceElement) =
@@ -80,7 +80,7 @@ def: applyScopeBefore(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::T
 let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
 if boundary.timeDistance->notEmpty() then
   let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.value in
-  if boundary.ordinal->notEmpty() then
+  if boundary.ordinal <> 0 then
     let n:Integer = boundary.ordinal in
     if oclr::ComparingOperator::ATLEAST = comparingOperator then
       self.atLeastBefore(trace.traceElements, eventName,n,timeDistance) 
@@ -103,7 +103,7 @@ if boundary.timeDistance->notEmpty() then
     endif
   endif
 else
-  if boundary.ordinal->notEmpty() then
+  if boundary.ordinal <> 0 then
     let n:Integer = boundary.ordinal in
     self.atLeastBefore(trace.traceElements, eventName,n,1)
   else
@@ -147,7 +147,7 @@ def: applyScopeAfter(trace:trace::Trace, scope:oclr::Scope):OrderedSet(trace::Tr
 let boundary:oclr::Boundary = scope.oclAsType(oclr::UniScope).boundary, eventName:String = boundary.event.name in
 if boundary.timeDistance->notEmpty() then
   let comparingOperator:oclr::ComparingOperator = boundary.timeDistance.comparingOperator, timeDistance:Integer = boundary.timeDistance.value in
-  if boundary.ordinal->notEmpty() then
+  if boundary.ordinal <> 0 then
       let n:Integer = boundary.ordinal in
     if oclr::ComparingOperator::ATLEAST = comparingOperator then
       self.atLeastAfter(trace.traceElements, eventName, n, timeDistance)
@@ -168,7 +168,7 @@ if boundary.timeDistance->notEmpty() then
     endif     
   endif
 else
-  if boundary.ordinal->notEmpty() then
+  if boundary.ordinal <> 0 then
       let n:Integer = boundary.ordinal in
     self.atLeastAfter(trace.traceElements, eventName, n, 1)         
     else  
@@ -219,16 +219,16 @@ if boundaryBegin.timeDistance->notEmpty() then
   let timeDistanceBegin:Integer = boundaryBegin.timeDistance.value in 
   if boundaryEnd.timeDistance->notEmpty() then
     let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
       else
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, timeDistanceEnd))
       endif
     else
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
       else
@@ -236,16 +236,16 @@ if boundaryBegin.timeDistance->notEmpty() then
       endif
     endif
   else
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, 1))
       else
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, 1))
       endif
     else
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, 1))
       else
@@ -254,18 +254,18 @@ if boundaryBegin.timeDistance->notEmpty() then
     endif
   endif
 else
-  if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
+  if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> 0 then
     let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, timeDistanceEnd))
       else
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, timeDistanceEnd))
       endif
     else
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, timeDistanceEnd))
       else
@@ -273,16 +273,16 @@ else
       endif
     endif
   else
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nBegin:Integer = boundaryBegin.ordinal in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, 1))
       else
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, 1))
       endif
     else
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{}, nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialBetweenAnd(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, 1))
       else
@@ -352,17 +352,17 @@ if boundaryBegin.timeDistance->notEmpty() then
   let timeDistanceBegin:Integer = boundaryBegin.timeDistance.value in
   if boundaryEnd.timeDistance->notEmpty() then
     let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
       in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
       else
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, timeDistanceEnd))
       endif
-    else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+    else if boundaryEnd.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, timeDistanceEnd))
@@ -370,17 +370,17 @@ if boundaryBegin.timeDistance->notEmpty() then
         self.generalAfterUntil(trace.traceElements, eventNameBegin, timeDistanceBegin, eventNameEnd, timeDistanceEnd)
       endif
     endif
-  else if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+  else if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
       in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, nEnd, 1))
       else
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, timeDistanceBegin, eventNameEnd, 1, 1))
       endif
-    else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+    else if boundaryEnd.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, timeDistanceBegin, eventNameEnd, nEnd, 1))
@@ -389,19 +389,19 @@ if boundaryBegin.timeDistance->notEmpty() then
       endif
     endif
   endif
-else if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
+else if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> 0 then
     let timeDistanceEnd:Integer = boundaryEnd.timeDistance.value in
-    if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+    if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
       in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, timeDistanceEnd))
       else
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, timeDistanceEnd))
       endif
-    else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+    else if boundaryEnd.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, timeDistanceEnd))
@@ -409,17 +409,17 @@ else if boundaryEnd.timeDistance->notEmpty() and boundaryEnd.ordinal <> -1 then
         self.generalAfterUntil(trace.traceElements, eventNameBegin, 1, eventNameEnd, timeDistanceEnd)
       endif
     endif
-  else if boundaryBegin.ordinal->notEmpty() and boundaryBegin.ordinal <> -1 then
+  else if boundaryBegin.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nBegin:Integer = boundaryBegin.ordinal
       in
-      if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+      if boundaryEnd.ordinal <> 0 then
         let nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, nEnd, 1))
       else
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, nBegin, 1, eventNameEnd, 1, 1))
       endif
-    else if boundaryEnd.ordinal->notEmpty() and boundaryEnd.ordinal <> -1 then
+    else if boundaryEnd.ordinal <> 0 then
       let result:Sequence(OrderedSet(trace::TraceElement)) = Sequence{},
         nEnd:Integer = boundaryEnd.ordinal in
         result->append(self.specialAfterUntil(trace.traceElements, eventNameBegin, 1, 1, eventNameEnd, nEnd, 1))
@@ -567,7 +567,7 @@ else
     if indexBegin >= lastEvent.index and Tuple{fromEvent:trace::TraceElement=null, toEvent:trace::TraceElement=null} = result then 
       let matching:Tuple(match:Boolean, latestEvent:trace::TraceElement) = chainReversed->iterate(chainElem:oclr::EventChainElement; iter:Tuple(match:Boolean, latestEvent:trace::TraceElement) = Tuple{match:Boolean = true, latestEvent:trace::TraceElement = lastEvent} |
         if true = iter.match and chainReversed->first() <> chainElem then
-          let previousElem:trace::TraceElement = self.previousFirstOccurrence(subtrace, chainElem.event.name, iter.latestEvent.index -1) in
+          let previousElem:trace::TraceElement = self.previousFirstOccurrence(subtrace, chainElem.event.name, iter.latestEvent.index - 1) in
           if null = previousElem then
             Tuple{match:Boolean = false, latestEvent:trace::TraceElement = null}
           else
