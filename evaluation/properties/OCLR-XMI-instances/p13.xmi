@@ -3,11 +3,11 @@
   <oclrExpressions name="P13">
     <scope xsi:type="oclr:UniScope" scopeType="before">
       <boundary>
-        <event name="b"/>
+        <event name="a"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="eventually">
-      <event name="a"/>
+      <event name="b"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

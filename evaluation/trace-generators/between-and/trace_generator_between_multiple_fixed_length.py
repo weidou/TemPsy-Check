@@ -8,7 +8,9 @@ import sys, os, argparse, traceback
 """
 A synthesized event trace generator
 @author: Wei Dou
-@date: 27 July 2014
+@date created: 27 July 2014
+@date modified: 20 April 2015
+@version: 1.3
 @input: an OCLR property (a scope & a pattern) and a target length
 @output: an event trace with random locations of events
 """
@@ -172,7 +174,9 @@ class PropertyFactory(object):
     cause_list = causes.split(',')
     events = []
     distances = []
+    cause_size = 0
     for cause in cause_list:
+      cause_size = cause_size + 1
       raw_event = cause.split()
       event = raw_event.pop().lower()
       RandomTraceGenerator.register_event(event)
@@ -208,7 +212,7 @@ class PropertyFactory(object):
         distances.append(None)
     if pt == PatternKeywords.response:
       distances.pop()
-    return Sequence(pt, events, distances)
+    return Sequence(pt, events, distances, cause_size)
 
 # test whether string s is an integer
   @staticmethod
@@ -251,12 +255,13 @@ class RandomTraceGenerator(object):
     self.length = length
     self.scope = scope
     self.pattern = pattern
+    self.timestamp = 0
 
   def open_file(self):
     # trace output file
     self.outputFile = os.path.join(os.getcwd(), '%s_%d_%d_between_mult_fixed_length.xmi' % (self.property_id, self.length, RandomTraceGenerator.segments_number/5))
     # trace events locations recording file
-    self.locationsFile = os.path.join(os.getcwd(), '%s_%d_%d_between_mult_fixed_length.locations' % (self.property_id,self.length,RandomTraceGenerator.segments_number/5))
+    self.locationsFile = os.path.join(os.getcwd(), '%s_%d_%d_between_mult_fixed_length.locations.txt' % (self.property_id,self.length,RandomTraceGenerator.segments_number/5))
     try:
       # open two output files
       self.f = open(self.outputFile, 'w')
@@ -327,7 +332,7 @@ class RandomTraceGenerator(object):
     try:
       pattern_length_bound = self.pattern.get_length_bound()
       # scope start point
-      scope_start = self.length-max(int(self.length*RandomTraceGenerator.density), self.scope.amount)+1
+      scope_start = self.length-max(int(self.length*RandomTraceGenerator.density), self.scope.size)+1
       if self.scope.distance:
         scope_start = max(scope_start, pattern_length_bound+self.scope.distance.get_lower_bound())
       else:
@@ -362,7 +367,7 @@ class RandomTraceGenerator(object):
       pattern_length_bound = self.pattern.get_length_bound()
       # scope start point
       scope_start = 1
-      scope_end = max(int(self.length*RandomTraceGenerator.density), self.scope.amount)
+      scope_end = max(int(self.length*RandomTraceGenerator.density), self.scope.size)
       if self.scope.distance:
         scope_end = min(scope_end, self.length-pattern_length_bound-self.scope.distance.get_lower_bound())
       else:
@@ -491,7 +496,7 @@ class RandomTraceGenerator(object):
         self.write_universality(start, end, self.pattern.event)
       elif type(self.pattern) == Absence:
         self.pattern.generate_locations(start, end)
-        if self.pattern.amount == 0:
+        if self.pattern.size == 0:
           self.write_universality(start, end, RandomTraceGenerator.mask)
         else:
           self.write_occurrences(start, end, self.pattern.locations, self.pattern.event)
@@ -512,7 +517,8 @@ class RandomTraceGenerator(object):
     i = start
     try:
       while i<=end:
-        self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, j, int(i*Distance.unit)))
+        self.timestamp = self.timestamp + int(Distance.unit)
+        self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, j, self.timestamp))
         i = i+1
       if start <= end:
         self.bf.writelines("%d-%d\t\t\t\t%s\n" % (start, end, event))
@@ -531,10 +537,11 @@ class RandomTraceGenerator(object):
       except StopIteration:
         j = end+1
       while i<=end:
+        self.timestamp = self.timestamp + int(Distance.unit)
         if i<j:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, int(i*Distance.unit)))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
         else:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, event_index, int(i*Distance.unit)))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, event_index, self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, event))
@@ -552,7 +559,7 @@ class RandomTraceGenerator(object):
   def write_sequence(self, start, end):
     try:
       pattern_length_bound = self.pattern.get_length_bound()
-      segment_length = max(pattern_length_bound, int(self.pattern.amount/RandomTraceGenerator.density))
+      segment_length = max(pattern_length_bound, int(self.pattern.size/RandomTraceGenerator.density))
       # calculate the segments needed for this sequence pattern
       segments = range(start, end, segment_length)
       # add the last segment
@@ -574,21 +581,26 @@ class RandomTraceGenerator(object):
       mark = i
       mask_index = RandomTraceGenerator.events_register.index(RandomTraceGenerator.mask)
       location_iter = iter(self.pattern.locations)
+      timestamp_iter = iter(self.pattern.timestamp_distances)
       try:
         j = next(location_iter)
+        t = next(timestamp_iter)
       except StopIteration:
         j = end+1
       while i<=end:
         if i<j:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, int(i*Distance.unit)))
+          self.timestamp = self.timestamp + int(Distance.unit)
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
         else:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, RandomTraceGenerator.events_register.index(self.pattern.events_dict[i]), int(i*Distance.unit)))
+          self.timestamp = self.timestamp + t
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, RandomTraceGenerator.events_register.index(self.pattern.events_dict[i]), self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, self.pattern.events_dict[i]))
           mark = i+1
           try:
             j = next(location_iter)
+            t = next(timestamp_iter)
           except StopIteration:
             j = end+1
         i = i+1
@@ -625,7 +637,7 @@ class UniScope(object):
 
   def __init__(self, st, ordinal, event, distance=None):
     self.scope_type = st
-    self.amount = ordinal
+    self.size = ordinal
     self.ordinal = ordinal
     self.event = event
     self.distance = distance
@@ -633,14 +645,14 @@ class UniScope(object):
   def get_min_length(self):
     if self.distance:
       if self.scope_type == ScopeKeywords.before:
-        return max(self.amount, self.distance.get_lower_bound())
+        return max(self.size, self.distance.get_lower_bound())
       else:
-        return self.amount+self.distance.get_lower_bound()
+        return self.size+self.distance.get_lower_bound()
     else:
-      return self.amount
+      return self.size
 
   def generate_locations(self, start, end):
-    self.locations = sorted(sample(xrange(start, end+1), self.amount))
+    self.locations = sorted(sample(xrange(start, end+1), self.size))
 
 ## between-and & after-until
 class BiScope(object):
@@ -649,7 +661,7 @@ class BiScope(object):
 
   def __init__(self, st, ordinal1, event1, distance1, ordinal2, event2, distance2):
     self.scope_type = st
-    self.amount = abs(ordinal1) + abs(ordinal2)
+    self.size = abs(ordinal1) + abs(ordinal2)
     self.ordinal1 = ordinal1
     self.event1 = event1
     self.distance1 = distance1
@@ -706,7 +718,7 @@ class Universality(object):
 
   def __init__(self, event):
     self.event = event
-    self.amount = 0
+    self.size = 0
 
   def get_min_length(self):
     return 1
@@ -720,7 +732,7 @@ class Existence(object):
     self.comparing_operator = comop
     self.times = times
     self.event = event
-    self.amount = 0
+    self.size = 0
 
   def get_min_length(self):
     return self.times
@@ -736,8 +748,8 @@ class Existence(object):
     }.get(self.comparing_operator, 1)
 
   def generate_locations(self, start, end):
-    self.amount = self.get_amount(max(self.times, int((end-start+1)*RandomTraceGenerator.density)))
-    self.locations = sorted(sample(xrange(start, end+1), self.amount))
+    self.size = self.get_amount(max(self.times, int((end-start+1)*RandomTraceGenerator.density)))
+    self.locations = sorted(sample(xrange(start, end+1), self.size))
 
 class Absence(object):
 
@@ -745,7 +757,7 @@ class Absence(object):
     self.comparing_operator = comop
     self.times = times
     self.event = event
-    self.amount = 0
+    self.size = 0
 
   def get_min_length(self):
     return 0
@@ -761,12 +773,12 @@ class Absence(object):
 
   def generate_locations(self, start, end):
     if self.comparing_operator is None:
-      self.amount = 0
+      self.size = 0
     else:
-      self.amount = self.get_amount(max(self.times-1, end-start+1))
+      self.size = self.get_amount(max(self.times-1, end-start+1))
     # self.locations = []
-    if self.amount:
-      self.locations = sorted(sample(xrange(start, end+1), self.amount))
+    if self.size:
+      self.locations = sorted(sample(xrange(start, end+1), self.size))
     # else:
     #   self.locations = [end]
 
@@ -775,56 +787,42 @@ class Sequence(object):
 
   pattern_type = 'Sequence'
 
-  def __init__(self, pt, events, distances=[]):
+  def __init__(self, pt, events, distances, cause_size):
     self.pattern_type = pt
-    self.amount = len(events)
+    self.size = len(events)
     self.events = events
     self.distances = distances
-    # insert None to the head of the distances list
+    self.cause_size = cause_size
+    self.effect_size = self.size - self.cause_size
+    # make size(distances) = self.size
     self.distances.insert(0,None)
-    self.prepare_bounds()
-
-  def prepare_bounds(self):
-    # prepare to calculate backward distances
-    self.distances.append(None)
-    self.distances.reverse()
-    self.distances.pop()
-    n = 0
-    self.events_bounds = []
-    for d in self.distances:
-      if d is None:
-        n = n+1
-      else:
-        n = n + d.get_upper_bound()
-      self.events_bounds.append(n)
-    # restore distances
-    self.distances.append(None)
-    self.distances.reverse()
-    self.distances.pop()
 
   def generate_locations(self, start, end):
-    upper_bounds = self.cal_upper_bounds(end)
     self.locations = []
+    self.timestamp_distances = []
     self.events_dict = {}
     i = 0
-    temp = start-1
-    while i < self.amount:
-      upper_bound = upper_bounds[i]
-      if self.distances[i]:
-        temp = self.distances[i].get_location(temp, upper_bound)
+    mid = start + int((end - start) * ((1.0*self.cause_size)/self.size))
+    location1 = randrange(start, mid+1)
+    location2 = randrange(mid+1, end+1)      
+    location = location1
+    while i < self.size:
+      self.locations.append(location)
+      self.events_dict[location] = self.events[i]
+      d = self.distances[i]
+      if d is None:
+        self.timestamp_distances.append(randrange(1,6)*int(Distance.unit))
       else:
-        temp = randrange(temp+1, upper_bound+1)
-      self.locations.append(temp)
-      self.events_dict[temp] = self.events[i]
+        if i == self.cause_size:
+          self.timestamp_distances.append(d.get_real_distance()-location2+previous_location+1)
+        else:
+          self.timestamp_distances.append(d.get_real_distance())
       i = i+1
-
-  def cal_upper_bounds(self, end):
-    # initialize the list of upper_bounds
-    upper_bounds = []
-    for i in self.events_bounds:
-      upper_bounds.append(end-i+1)
-    upper_bounds.reverse()
-    return upper_bounds
+      if i == self.cause_size:
+        previous_location = location
+        location = location2
+      else:
+        location = location + 1
 
   def get_min_length(self):
     n = 0
@@ -882,6 +880,13 @@ class Distance(object):
   def get_location(self, start, end):
     return start+self.get_distance(end-start)
 
+  def get_real_distance(self):
+    return {
+      ComparingOperator.at_least  : randrange(self.value, int((1+RandomTraceGenerator.density)*self.value)+int(Distance.unit)),
+      ComparingOperator.at_most   : randrange(int(Distance.unit), self.value+1),
+      ComparingOperator.exactly   : self.value
+    }[self.comparing_operator]
+    
 # program entry
 if __name__ == '__main__':
   cmdline = argparse.ArgumentParser(usage='usage: trace_generator.py -s scope -p pattern -l 10000', description='Generate a random trace with a specific length.')

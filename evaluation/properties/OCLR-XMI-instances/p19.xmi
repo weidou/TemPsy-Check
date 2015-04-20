@@ -3,12 +3,12 @@
   <oclrExpressions name="P19">
     <scope xsi:type="oclr:UniScope" scopeType="before">
       <boundary ordinal="3">
-        <event name="b"/>
+        <event name="a"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:OrderPattern" patternType="preceding">
       <block1>
-        <event name="a"/>
+        <event name="b"/>
       </block1>
       <block1>
         <timeDistance value="1000"/>

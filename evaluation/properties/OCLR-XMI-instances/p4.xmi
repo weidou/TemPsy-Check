@@ -3,7 +3,7 @@
   <oclrExpressions name="P4">
     <scope xsi:type="oclr:Globally"/>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="eventually" comparingOperator="at most" times="3">
-      <event name="c"/>
+      <event name="a"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

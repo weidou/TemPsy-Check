@@ -3,7 +3,7 @@
   <oclrExpressions name="P2">
     <scope xsi:type="oclr:Globally"/>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="never">
-      <event name="d"/>
+      <event name="b"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

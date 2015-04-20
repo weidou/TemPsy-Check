@@ -4,11 +4,11 @@
     <scope xsi:type="oclr:Globally"/>
     <pattern xsi:type="oclr:OrderPattern" patternType="preceding">
       <block1>
-        <event name="c"/>
+        <event name="a"/>
       </block1>
       <timeDistance value="100"/>
       <block2>
-        <event name="d"/>
+        <event name="b"/>
       </block2>
     </pattern>
   </oclrExpressions>

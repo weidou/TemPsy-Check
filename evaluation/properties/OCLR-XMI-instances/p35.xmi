@@ -3,14 +3,14 @@
   <oclrExpressions name="P35">
     <scope xsi:type="oclr:BiScope" scopeType="and">
       <boundaryBegin>
-        <event name="c"/>
+        <event name="a"/>
       </boundaryBegin>
       <boundaryEnd>
-        <event name="d"/>
+        <event name="b"/>
       </boundaryEnd>
     </scope>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="never" comparingOperator="exactly" times="2">
-      <event name="a"/>
+      <event name="c"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

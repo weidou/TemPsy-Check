@@ -4,14 +4,14 @@
     <scope xsi:type="oclr:Globally"/>
     <pattern xsi:type="oclr:OrderPattern" patternType="responding">
       <block1>
-        <event name="d"/>
+        <event name="a"/>
       </block1>
       <timeDistance value="1000"/>
       <block2>
-        <event name="a"/>
+        <event name="b"/>
       </block2>
       <block2>
-        <event name="b"/>
+        <event name="c"/>
       </block2>
     </pattern>
   </oclrExpressions>

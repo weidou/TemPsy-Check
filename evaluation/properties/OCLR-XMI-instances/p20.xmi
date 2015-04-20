@@ -3,15 +3,15 @@
   <oclrExpressions name="P20">
     <scope xsi:type="oclr:UniScope" scopeType="before">
       <boundary>
-        <event name="d"/>
+        <event name="a"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:OrderPattern" patternType="preceding">
       <block1>
-        <event name="a"/>
+        <event name="b"/>
       </block1>
       <block2>
-        <event name="b"/>
+        <event name="c"/>
       </block2>
     </pattern>
   </oclrExpressions>

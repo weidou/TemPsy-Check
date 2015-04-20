@@ -1,1 +1,1 @@
-P18: before d a, # at most 6000 tu b preceding c;
+P18: before a b, # at most 6000 tu c preceding d;

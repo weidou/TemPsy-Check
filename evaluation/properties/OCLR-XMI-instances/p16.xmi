@@ -3,16 +3,16 @@
   <oclrExpressions name="P16">
     <scope xsi:type="oclr:UniScope" scopeType="before">
       <boundary>
-        <event name="d"/>
+        <event name="a"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:OrderPattern" patternType="responding">
       <block1>
-        <event name="c"/>
+        <event name="b"/>
       </block1>
       <timeDistance comparingOperator="at most" value="3000"/>
       <block2>
-        <event name="a"/>
+        <event name="c"/>
       </block2>
     </pattern>
   </oclrExpressions>

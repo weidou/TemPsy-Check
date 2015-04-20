@@ -3,11 +3,11 @@
   <oclrExpressions name="P22">
     <scope xsi:type="oclr:UniScope" scopeType="after">
       <boundary>
-        <event name="d"/>
+        <event name="a"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:Universality">
-      <event name="c"/>
+      <event name="b"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

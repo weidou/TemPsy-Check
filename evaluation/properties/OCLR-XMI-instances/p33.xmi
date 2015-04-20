@@ -8,7 +8,7 @@
       </boundaryBegin>
       <boundaryEnd>
         <event name="b"/>
-        <timeDistance value="1000"/>
+        <timeDistance value="500"/>
       </boundaryEnd>
     </scope>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="never">

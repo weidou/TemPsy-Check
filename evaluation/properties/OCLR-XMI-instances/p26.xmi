@@ -3,12 +3,12 @@
   <oclrExpressions name="P26">
     <scope xsi:type="oclr:UniScope" scopeType="after">
       <boundary>
-        <event name="b"/>
+        <event name="a"/>
         <timeDistance comparingOperator="at most" value="1000"/>
       </boundary>
     </scope>
     <pattern xsi:type="oclr:OccurrencePattern" patternType="eventually">
-      <event name="d"/>
+      <event name="b"/>
     </pattern>
   </oclrExpressions>
 </oclr:OCLRConstraint>

@@ -11,11 +11,11 @@
     </scope>
     <pattern xsi:type="oclr:OrderPattern" patternType="responding">
       <block1>
-        <event name="d"/>
+        <event name="c"/>
       </block1>
       <timeDistance value="1000"/>
       <block2>
-        <event name="c"/>
+        <event name="d"/>
       </block2>
     </pattern>
   </oclrExpressions>
