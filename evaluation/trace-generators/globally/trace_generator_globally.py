@@ -821,7 +821,7 @@ class Sequence(object):
         self.timestamp_distances.append(randrange(1,6)*int(Distance.unit))
       else:
         if i == self.cause_size:
-          self.timestamp_distances.append(abs(d.get_real_distance()-location2+previous_location+1))
+          self.timestamp_distances.append(max(int(Distance.unit), d.get_real_distance()-location2+previous_location+1))
         else:
           self.timestamp_distances.append(d.get_real_distance())
       i = i+1
