@@ -876,9 +876,10 @@ class Sequence(object):
     self.timestamp_distances = []
     self.events_dict = {}
     i = 0
-    mid = start + max(self.cause_size-1, int((end - start) * ((1.0*self.cause_size)/self.size))-self.cause_size)
-    location1 = randrange(start, mid+1)
-    location2 = randrange(mid+1, end-self.effect_size+1)
+    mid_distance = self.distances[self.cause_size].get_real_distance()
+    location1 = randrange(start, end-self.size+2)
+    location2 = location1+self.cause_size+randrange(0, mid_distance+1)
+    location2 = min(location2, end-self.effect_size+1)
     location = location1
     while i < self.size:
       self.locations.append(location)
