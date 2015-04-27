@@ -294,7 +294,7 @@ class RandomTraceGenerator(object):
       else:
         print "Please provide a correct pair of scope and pattern!!"
       for e in RandomTraceGenerator.events_register:
-        self.f.writelines("  <event id=\"%d\" name=\"%s\"/>\n" % (RandomTraceGenerator.events_register.index(e)+1, e))
+        self.f.writelines("  <events id=\"%d\" name=\"%s\"/>\n" % (RandomTraceGenerator.events_register.index(e)+1, e))
       self.f.writelines("</trace:Trace>\n")
       self.f.close()
       self.bf.close()
