@@ -1,0 +1,1 @@
+b() IMPLIES ONCE[100,*] a()

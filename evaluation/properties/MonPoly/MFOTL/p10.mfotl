@@ -1,0 +1,5 @@
+(c() AND NEXT(EVENTUALLY[0,1000000] d()))
+IMPLIES ONCE[1000,*]
+(
+  b() AND (PREVIOUS (ONCE[0,*](a())))
+)
