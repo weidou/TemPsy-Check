@@ -4,7 +4,7 @@ Welcome to OCLR-Check
 OCLR-Check is a toolset to perform offline checking of *OCLR* properties on system execution traces. The toolset has been developed by Wei Dou (http://people.svv.lu/dou), at the SVV lab (http://www.svv.lu) of the University of Luxembourg (http://wwwen.uni.lu).
 More information on OCLR-Check is available in this technical report:
 
-> Wei Dou, Domenico Bianculli, and Lionel Briand. __A model-based approach to trace checking of temporal properties with OCL__. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014.  Available online at http://hdl.handle.net/10993/16112
+> Wei Dou, Domenico Bianculli, and Lionel Briand. __A model-based approach to offline trace checking of temporal properties with OCL__. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, September 2014.  Available online at http://hdl.handle.net/10993/16112
 
 *OCLR* is a temporal extension of OCL (Object Constraint Language, http://www.omg.org/spec/OCL) which allows users to express temporal properties using property specification patterns (http://patterns.projects.cis.ksu.edu). *OCLR* has been introduced in this paper:
 
