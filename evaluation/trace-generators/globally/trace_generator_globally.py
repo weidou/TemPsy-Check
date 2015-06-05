@@ -511,7 +511,7 @@ class RandomTraceGenerator(object):
     try:
       while i<=end:
         self.timestamp = self.timestamp + int(Distance.unit)
-        self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, j, self.timestamp))
+        self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, j, self.timestamp))
         i = i+1
       if start <= end:
         self.bf.writelines("%d-%d\t\t\t\t%s\n" % (start, end, event))
@@ -532,9 +532,9 @@ class RandomTraceGenerator(object):
       while i<=end:
         self.timestamp = self.timestamp + int(Distance.unit)
         if i<j:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
         else:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, event_index, self.timestamp))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, event_index, self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, event))
@@ -583,10 +583,10 @@ class RandomTraceGenerator(object):
       while i<=end:
         if i<j:
           self.timestamp = self.timestamp + int(Distance.unit)
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
         else:
           self.timestamp = self.timestamp + t
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@event.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, RandomTraceGenerator.events_register.index(self.pattern.events_dict[i]), self.timestamp))
+          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, RandomTraceGenerator.events_register.index(self.pattern.events_dict[i]), self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, self.pattern.events_dict[i]))
