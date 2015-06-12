@@ -8,7 +8,7 @@ Trace returns Trace:
 		(traceElements+=TraceElement)* traceElements+=LastTraceElement
 	'}'
 	'events' '{'
-		(event+=Event)* event+=LastEvent
+		(events+=Event)* events+=LastEvent
 	'}';
 
 TraceElement returns TraceElement:
