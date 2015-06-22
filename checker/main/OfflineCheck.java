@@ -36,11 +36,11 @@ import org.eclipse.ocl.helper.OCLHelper;
 public class OfflineCheck {
 	private Monitor monitor;
 	private static final String oclOperationsFile = "../lu.svv.offline/lib/oclr.ocl";
-	
+
 	public static void main(String[] args) {
 		//check_globally();
 	}
-    
+
 	// This method is used for checking the OCLR properties p1-p12. Please change the lists if you only want to check subsets of the properties and traces
 	public static void check_globally(){
 		List<Integer> iList = Arrays.asList(100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000); // indexes of the traces: various trace lengths
@@ -71,7 +71,7 @@ public class OfflineCheck {
 			}
 		}
 	}
-	
+
 	// This method is used for checking the OCLR properties p13-p20. Please change the lists if you only want to check subsets of the properties and traces
 	public static void check_before(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
@@ -102,7 +102,7 @@ public class OfflineCheck {
 			}
 		}
 	}
-	
+
 	// This method is used for checking the OCLR properties p21-p31. Please change the lists if you only want to check subsets of the properties and traces
 	public static void check_after(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
@@ -274,15 +274,15 @@ public class OfflineCheck {
 	public static void apply_before(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
 		List<Integer> properties_before = Arrays.asList(13,14,15,16,17,18,19,20); // properties p13-p20
-        
+
 		Iterator<Integer> iterProperty_before = properties_before.iterator();
-        
+
 		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
 		String tPathTemp_before = "../lu.svv.offline/instances/p%d_1000000_%d_before.xmi";
-        
+
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
-		
+
 		while(iterProperty_before.hasNext()){
 			i=0;
 			int propertyNo = iterProperty_before.next();
@@ -304,20 +304,20 @@ public class OfflineCheck {
 			}
 		}
 	}
-	
+
 	// This method is used for applying the OCLR properties scopes of p21-p31. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_after(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9); // indexes of the traces
 		List<Integer> properties_after = Arrays.asList(21,22,23,24,25,26,27,28,29,30,31); // properties p21-p31
-        
+
 		Iterator<Integer> iterProperty_after = properties_after.iterator();
-        
+
 		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
 		String tPathTemp_after = "../lu.svv.offline/instances/p%d_1000000_%d_after.xmi";
-        
+
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
-		
+
 		while(iterProperty_after.hasNext()){
 			i=0;
 			int propertyNo = iterProperty_after.next();
@@ -339,7 +339,7 @@ public class OfflineCheck {
 			}
 		}
 	}
-	
+
 	// This method is used for applying the OCLR properties scopes of p32-p35 on the 'between_mult_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_between_multiple_fixed_length(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
@@ -407,7 +407,7 @@ public class OfflineCheck {
 			}
 		}
 	}
-	
+
 	// This method is used for applying the OCLR properties scopes of p36-p38 on the 'between_one_fixed_length' traces. Please change the lists if you only want to check subsets of the properties and traces
 	public static void apply_between_one_fixed_length(){
 		List<Integer> iList = Arrays.asList(1,2,3,4,5,6,7,8,9,10); // indexes of the traces
@@ -476,26 +476,89 @@ public class OfflineCheck {
 		}
 	}
 
-	public OfflineCheck loadMonitor(String oclrFileName, String traceFileName)
+	// load XMI instances of OCLR properties and trace instances
+	public OfflineCheck loadMonitor(String oclrFilePath, String traceFilePath)
 	{
 		ResourceSet resourceSet = new ResourceSetImpl();
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
 			    "xmi", new XMIResourceFactoryImpl());
 		resourceSet.getPackageRegistry().put(OclrPackage.eNS_URI, OclrPackage.eINSTANCE);
-		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFileName), true);
+		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFilePath), true);
 		OCLRConstraint constraint = (OCLRConstraint) oclrResource.getContents().get(0);
-		
+
 		resourceSet.getPackageRegistry().put(TracePackage.eNS_URI, TracePackage.eINSTANCE);
-		Resource traceResource = resourceSet.getResource(URI.createURI(traceFileName), true);
+		Resource traceResource = resourceSet.getResource(URI.createURI(traceFilePath), true);
 		Trace trace = (Trace) traceResource.getContents().get(0);
-		
+
 		Monitor monitor = new CheckFactoryImpl().createMonitor();
-		
+
 		monitor.setConstraint(constraint);
 		monitor.setTrace(trace);
 		this.monitor = monitor;
 		return this;
 	}
+
+	// load OCLR properties from an XMI file and trace from a CSV file
+	public OfflineCheck loadMonitor(String oclrFilePath, String traceFilePath)
+	{
+		monitor = new CheckFactoryImpl().createMonitor();
+
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+					"xmi", new XMIResourceFactoryImpl());
+		resourceSet.getPackageRegistry().put(OclrPackage.eNS_URI, OclrPackage.eINSTANCE);
+		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFilePath), true);
+		OCLRConstraint constraint = (OCLRConstraint) oclrResource.getContents().get(0);
+
+		monitor.setConstraint(constraint);
+		monitor.setTrace(loadTrace(traceFilePath));
+
+		return this;
+	}
+
+	//load trace from a CSV file
+	public static Trace loadTrace(String traceFilePath) {
+		File traceFile = new File(traceFilePath);
+		java.util.regex.Pattern csvDelimiter = java.util.regex.Pattern.compile("\\W+");
+		TraceFactory traceFactory = TraceFactoryImpl.init();
+		Trace trace = traceFactory.createTrace();
+		Map<String, Event> events = new TreeMap<String, Event>();
+		List<TraceElement> traceElements = new ArrayList<TraceElement>();
+		int traceIndex = 0;
+		int eventIndex = 0;
+		try {
+			Scanner traceInputStream = new Scanner(traceFile);
+			traceInputStream.nextLine();
+			while(traceInputStream.hasNext()){
+				traceIndex++;
+				String line = traceInputStream.nextLine();
+				String[] values = csvDelimiter.split(line);
+				String eventName = values[0];
+				int timestampValue = Integer.parseInt(values[1]);
+				TraceElement traceElement = traceFactory.createTraceElement();
+				traceElement.setIndex(traceIndex);
+				if (events.containsKey(eventName)) {
+					traceElement.setEvent(events.get(eventName));
+				} else {
+					eventIndex++;
+					Event newEvent = traceFactory.createEvent();
+					newEvent.setId(eventIndex);
+					newEvent.setName(eventName);
+					traceElement.setEvent(newEvent);
+					events.put(eventName, newEvent);
+				}
+				TimeStamp timestamp = traceFactory.createTimeStamp();
+				timestamp.setValue(timestampValue);
+				traceElement.setTimestamp(timestamp);
+				traceElements.add(traceElement);
+			}
+			traceInputStream.close();
+	     } catch(FileNotFoundException e){
+	    	 	e.printStackTrace();
+	     }
+		trace.getTraceElements().addAll(traceElements);
+		return trace;
+	}
+
 	public void check()
 	{
 		// Copied from org.eclipse.ocl.ecore.tests.DocumentationExamples.java
