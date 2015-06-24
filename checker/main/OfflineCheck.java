@@ -1,22 +1,39 @@
 package lu.svv.offline.check;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Set;
 
 import lu.svv.offline.check.impl.CheckFactoryImpl;
+import lu.svv.offline.oclr.BiScope;
+import lu.svv.offline.oclr.EventChainElement;
 import lu.svv.offline.oclr.OCLRConstraint;
+import lu.svv.offline.oclr.OCLRExpression;
+import lu.svv.offline.oclr.OccurrencePattern;
 import lu.svv.offline.oclr.OclrPackage;
+import lu.svv.offline.oclr.OrderPattern;
+import lu.svv.offline.oclr.Pattern;
+import lu.svv.offline.oclr.Scope;
+import lu.svv.offline.oclr.UniScope;
+import lu.svv.offline.trace.Event;
+import lu.svv.offline.trace.TimeStamp;
 import lu.svv.offline.trace.Trace;
+import lu.svv.offline.trace.TraceElement;
+import lu.svv.offline.trace.TraceFactory;
 import lu.svv.offline.trace.TracePackage;
-
+import lu.svv.offline.trace.impl.TraceFactoryImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
