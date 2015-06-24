@@ -52,7 +52,7 @@ import org.eclipse.ocl.helper.OCLHelper;
 
 public class OfflineCheck {
 	private Monitor monitor;
-	private static final String oclOperationsFile = "../lu.svv.offline/lib/oclr.ocl";
+	public static final String oclOperationsFile = "../lu.svv.offline/lib/oclr.ocl";
 
 	public static void main(String[] args) {
 		//check_globally();
@@ -591,10 +591,13 @@ public class OfflineCheck {
 		try {
 			// parse the contents as an OCL document
 			in = new FileInputStream(oclOperationsFile);
+			in.skip(191);
 			ocl.parse(new OCLInput(in));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ParserException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 		    try {
@@ -637,10 +640,14 @@ public class OfflineCheck {
 		InputStream in = null;
 		try {
 			in = new FileInputStream(oclOperationsFile);
+			in.skip(191);
 			ocl.parse(new OCLInput(in));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ParserException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		    try {
