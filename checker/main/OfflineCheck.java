@@ -136,14 +136,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_after, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).check(); //check the property
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -170,14 +165,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).check(); //check the property
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -204,14 +194,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).check(); //check the property
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -238,14 +223,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).check(); //check the property
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -272,14 +252,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).check(); //check the property
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -295,7 +270,7 @@ public class OfflineCheck {
 		Iterator<Integer> iterProperty_before = properties_before.iterator();
 
 		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
-		String tPathTemp_before = "../lu.svv.offline/instances/p%d_1000000_%d_before.xmi";
+		String tPathTemp_before = "../lu.svv.offline/instances/p%d_100000_%d_before.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -307,14 +282,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_before, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -330,7 +300,7 @@ public class OfflineCheck {
 		Iterator<Integer> iterProperty_after = properties_after.iterator();
 
 		String pPathTemp = "../lu.svv.offline/instances/p%d.xmi";
-		String tPathTemp_after = "../lu.svv.offline/instances/p%d_1000000_%d_after.xmi";
+		String tPathTemp_after = "../lu.svv.offline/instances/p%d_100000_%d_after.xmi";
 
 		int i = 0;
 		OfflineCheck rc = new OfflineCheck();
@@ -342,14 +312,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_after, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -376,14 +341,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -410,14 +370,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -444,14 +399,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -478,14 +428,9 @@ public class OfflineCheck {
 			while(i < 5){ // check each property 5 times
 				Iterator<Integer> iter = iList.iterator();
 				while(iter.hasNext()){
-					long startTime = System.currentTimeMillis();
 					String pPath = String.format(pPathTemp, propertyNo);
 					String tPath = String.format(tPathTemp_between, propertyNo, iter.next());
 					rc.loadMonitor(pPath, tPath).evaluate_applyscope(); // apply the scope
-					long stopTime = System.currentTimeMillis();
-				    long elapsedTime = stopTime - startTime;
-				    System.out.print(elapsedTime/1000.0);
-				    System.out.print('\t');
 				}
 				i++;
 			    System.out.println();
@@ -493,12 +438,29 @@ public class OfflineCheck {
 		}
 	}
 
+	// load XMI instances of OCLR properties and CSV trace instances
+	public OfflineCheck loadMonitorFromCsv(String oclrFilePath, String traceFilePath)
+	{
+		ResourceSet resourceSet = new ResourceSetImpl();
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+					"xmi", new XMIResourceFactoryImpl());
+		resourceSet.getPackageRegistry().put(OclrPackage.eNS_URI, OclrPackage.eINSTANCE);
+		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFilePath), true);
+		OCLRConstraint constraint = (OCLRConstraint) oclrResource.getContents().get(0);
+
+		Monitor monitor = new CheckFactoryImpl().createMonitor();
+		monitor.setConstraint(constraint);
+		monitor.setTrace(loadTrace(traceFilePath));
+
+		this.monitor = monitor;
+		return this;
+	}
+
 	// load XMI instances of OCLR properties and trace instances
 	public OfflineCheck loadMonitor(String oclrFilePath, String traceFilePath)
 	{
 		ResourceSet resourceSet = new ResourceSetImpl();
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-			    "xmi", new XMIResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( "xmi", new XMIResourceFactoryImpl());
 		resourceSet.getPackageRegistry().put(OclrPackage.eNS_URI, OclrPackage.eINSTANCE);
 		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFilePath), true);
 		OCLRConstraint constraint = (OCLRConstraint) oclrResource.getContents().get(0);
@@ -508,27 +470,11 @@ public class OfflineCheck {
 		Trace trace = (Trace) traceResource.getContents().get(0);
 
 		Monitor monitor = new CheckFactoryImpl().createMonitor();
-
+		//sanitize(trace, constraint);
 		monitor.setConstraint(constraint);
 		monitor.setTrace(trace);
+
 		this.monitor = monitor;
-		return this;
-	}
-
-	// load OCLR properties from an XMI file and trace from a CSV file
-	public OfflineCheck loadMonitor(String oclrFilePath, String traceFilePath)
-	{
-		monitor = new CheckFactoryImpl().createMonitor();
-
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-					"xmi", new XMIResourceFactoryImpl());
-		resourceSet.getPackageRegistry().put(OclrPackage.eNS_URI, OclrPackage.eINSTANCE);
-		Resource oclrResource = resourceSet.getResource(URI.createURI(oclrFilePath), true);
-		OCLRConstraint constraint = (OCLRConstraint) oclrResource.getContents().get(0);
-
-		monitor.setConstraint(constraint);
-		monitor.setTrace(loadTrace(traceFilePath));
-
 		return this;
 	}
 
@@ -620,7 +566,13 @@ public class OfflineCheck {
 			while(it2.hasNext()) {
 				Entry<String, Constraint> pairs = (Entry<String, Constraint>)it2.next();
 				// check the property
-				ocl.check(this.monitor, pairs.getValue());
+				long startTime = System.currentTimeMillis();
+				//ocl.check(this.monitor, pairs.getValue());
+				System.out.println(ocl.check(this.monitor, pairs.getValue()));
+				long stopTime = System.currentTimeMillis();
+			    long elapsedTime = stopTime - startTime;
+			    System.out.print(elapsedTime);
+			    System.out.print('\t');
 			}
 		} catch (ParserException e) {
 			e.printStackTrace();
@@ -669,7 +621,12 @@ public class OfflineCheck {
 			Iterator<Entry<String, OCLExpression<EClassifier>>> it2 = queryMap.entrySet().iterator();
 			while(it2.hasNext()) {
 				Entry<String, OCLExpression<EClassifier>> pairs = (Entry<String, OCLExpression<EClassifier>>)it2.next();
-				ocl.evaluate(this.monitor, pairs.getValue());
+				long startTime = System.currentTimeMillis();
+				System.out.println(ocl.evaluate(this.monitor, pairs.getValue()));
+				long stopTime = System.currentTimeMillis();
+			    long elapsedTime = stopTime - startTime;
+			    System.out.print(elapsedTime);
+			    System.out.print('\t');
 			}
 		} catch (ParserException e) {
 			e.printStackTrace();
