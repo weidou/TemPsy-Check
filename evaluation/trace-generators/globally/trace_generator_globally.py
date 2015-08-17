@@ -809,9 +809,8 @@ class Sequence(object):
     self.timestamp_distances = []
     self.events_dict = {}
     i = 0
-    mid = start + max(self.cause_size-1, int((end - start) * ((1.0*self.cause_size)/self.size))-self.cause_size)
-    location1 = randrange(start, mid+1)
-    location2 = randrange(mid+1, end-self.effect_size+1)
+    location1 = randrange(start, end-self.effect_size+1)
+    location2 = self.distances[self.cause_size].get_location(location1+self.cause_size, end-self.effect_size+1)
     location = location1
     while i < self.size:
       self.locations.append(location)
@@ -885,7 +884,14 @@ class Distance(object):
     }[self.comparing_operator]
 
   def get_location(self, start, end):
-    return start+self.get_distance(end-start)
+    least = int(ceil(self.value/Distance.unit))
+    most = int(floor(self.value/Distance.unit))
+    return min(end, start +
+              {
+                ComparingOperator.at_least  : randrange(least-1, max(least, end-start)),
+                ComparingOperator.at_most   : randrange(0, max(most, 1)),
+                ComparingOperator.exactly   : randrange(0, max(most, 1)),
+              }[self.comparing_operator])
 
   def get_real_distance(self):
     return {
