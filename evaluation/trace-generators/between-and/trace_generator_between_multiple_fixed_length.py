@@ -188,13 +188,14 @@ class PropertyFactory(object):
         value = int(raw_event.pop())
         # pop 'least|most|exactly'
         comop = raw_event.pop()
-        distances.append(Distance(comop, value))
+        distances.append(Distance(comop.strip('#'), value))
       else:
         distances.append(None)
     if pt == PatternKeywords.response:
       distances.append(distances.pop(0))
     else:
       distances.pop(0)
+    effectDistances = []
     for effect in effect_list:
       raw_event = effect.split()
       event = raw_event.pop().lower()
@@ -207,11 +208,12 @@ class PropertyFactory(object):
         value = int(raw_event.pop())
         # pop 'least|most|exactly'
         comop = raw_event.pop()
-        distances.append(Distance(comop, value))
+        effectDistances.append(Distance(comop.strip('#'), value))
       else:
-        distances.append(None)
+        effectDistances.append(None)
     if pt == PatternKeywords.response:
-      distances.pop()
+      effectDistances.pop(0)
+    distances += effectDistances
     return Sequence(pt, events, distances, cause_size)
 
 # test whether string s is an integer
