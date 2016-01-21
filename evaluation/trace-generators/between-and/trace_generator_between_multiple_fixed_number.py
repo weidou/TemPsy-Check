@@ -235,10 +235,10 @@ class RandomTraceGenerator(object):
   between_start = 1
   # tail of scope between_and
   between_end = 1
-  # fixed length of each segments
-  fixed_number = 20
-  # the number of segments
+  # the length of each segments
   segment_length = 2000
+  # fixed number of segments
+  fixed_number = 20
   # candidate events [a..z]
   candidate_events = list(map(chr, range(97, 123)))
   # the events register for each OCLR property

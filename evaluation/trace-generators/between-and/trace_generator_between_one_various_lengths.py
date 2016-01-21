@@ -235,7 +235,7 @@ class RandomTraceGenerator(object):
   between_start = 1
   # tail of scope between_and
   between_end = 1
-  # fixed length
+  # minimal length
   min_length = 10000
   # candidate events [a..z]
   candidate_events = list(map(chr, range(97, 123)))
