@@ -1,0 +1,10 @@
+P3: globally eventually at least 2 a3;
+P4: globally eventually at most 3 a4;
+P5: globally a5 responding at most 1000 tu b5;
+P6: globally a6 responding exactly 1000 tu b6;
+P7: globally a7 preceding at most 6000 tu b7;
+P8: globally a8 preceding at least 100 tu b8;
+P9: globally a9 preceding exactly 100 tu b9;
+P10: globally a10, b10 preceding at least 1000 tu c10, d10;
+P11: globally a11 responding at least 1000 tu b11, c11;
+P12: globally a12 responding b12;

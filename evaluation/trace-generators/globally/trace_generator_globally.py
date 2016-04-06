@@ -11,7 +11,7 @@ A synthesized event trace generator
 @date created: 27 July 2014
 @date modified: 20 April 2015
 @version: 1.3
-@input: an OCLR property (a scope & a pattern) and a target length
+@input: an TemPsy property (a scope & a pattern) and a target length
 @output: an event trace with random locations of events
 """
 
@@ -233,7 +233,7 @@ class RandomTraceGenerator(object):
   density = 0.1
   # candidate events [a..z]
   candidate_events = list(map(chr, range(97, 123)))
-  # the events register for each OCLR property
+  # the events register for each TemPsy property
   events_register = [mask]
 
   @staticmethod
@@ -253,7 +253,7 @@ class RandomTraceGenerator(object):
 
   def open_file(self):
     # trace output file
-    self.outputFile = os.path.join(os.getcwd(), '%s_%d.xmi' % (self.property_id, self.length))
+    self.outputFile = os.path.join(os.getcwd(), '%s_%d.csv' % (self.property_id, self.length))
     # trace events locations recording file
     self.locationsFile = os.path.join(os.getcwd(), '%s_%d.locations.txt' % (self.property_id,self.length))
     try:
@@ -269,7 +269,7 @@ class RandomTraceGenerator(object):
       # open files
       self.open_file()
       # write trace file header
-      self.f.writelines("<?xml version=\"1.0\" encoding=\"ASCII\"?>\n<trace:Trace xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:trace=\"http://www.svv.lu/offline/trace/Trace\">\n")
+      self.f.writelines("event,timestamp\n")
       # write trace locations file header
       self.bf.writelines("length: %d\n" % self.length)
       # generate an event trace accorrding to the temporal property containing a scope and a pattern
@@ -295,9 +295,6 @@ class RandomTraceGenerator(object):
             self.write_afteruntil()
       else:
         print "Please provide a correct pair of scope and pattern!!"
-      for e in RandomTraceGenerator.events_register:
-        self.f.writelines("  <events id=\"%d\" name=\"%s\"/>\n" % (RandomTraceGenerator.events_register.index(e)+1, e))
-      self.f.writelines("</trace:Trace>\n")
       self.f.close()
       self.bf.close()
       print 'Done!'
@@ -508,12 +505,11 @@ class RandomTraceGenerator(object):
       traceback.print_exc()
 
   def write_universality(self, start, end, event):
-    j = RandomTraceGenerator.events_register.index(event)
     i = start
     try:
       while i<=end:
         self.timestamp = self.timestamp + int(Distance.unit)
-        self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, j, self.timestamp))
+        self.f.writelines("%s,%d\n" % (event, self.timestamp))
         i = i+1
       if start <= end:
         self.bf.writelines("%d-%d\t\t\t\t%s\n" % (start, end, event))
@@ -524,8 +520,6 @@ class RandomTraceGenerator(object):
     try:
       i = start
       mark = i
-      mask_index = RandomTraceGenerator.events_register.index(RandomTraceGenerator.mask)
-      event_index = RandomTraceGenerator.events_register.index(event)
       location_iter = iter(locations)
       try:
         j = next(location_iter)
@@ -534,9 +528,9 @@ class RandomTraceGenerator(object):
       while i<=end:
         self.timestamp = self.timestamp + int(Distance.unit)
         if i<j:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
+          self.f.writelines("%s,%d\n" % (RandomTraceGenerator.mask, self.timestamp))
         else:
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, event_index, self.timestamp))
+          self.f.writelines("%s,%d\n" % (event, self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, event))
@@ -574,7 +568,6 @@ class RandomTraceGenerator(object):
     try:
       i = start
       mark = i
-      mask_index = RandomTraceGenerator.events_register.index(RandomTraceGenerator.mask)
       location_iter = iter(self.pattern.locations)
       timestamp_iter = iter(self.pattern.timestamp_distances)
       try:
@@ -585,10 +578,10 @@ class RandomTraceGenerator(object):
       while i<=end:
         if i<j:
           self.timestamp = self.timestamp + int(Distance.unit)
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, mask_index, self.timestamp))
+          self.f.writelines("%s,%d\n" % (RandomTraceGenerator.mask, self.timestamp))
         else:
           self.timestamp = self.timestamp + t
-          self.f.writelines("  <traceElements index=\"%d\" event=\"//@events.%d\">\n  <timestamp value=\"%d\"/>\n  </traceElements>\n" % (i, RandomTraceGenerator.events_register.index(self.pattern.events_dict[i]), self.timestamp))
+          self.f.writelines("%s,%d\n" % (self.pattern.events_dict[i], self.timestamp))
           if mark<=i-1:
             self.bf.writelines("%d-%d\t\t\t\t%s\n" % (mark, i-1, RandomTraceGenerator.mask))
           self.bf.writelines("%d\t\t\t\t\t%s\n" % (i, self.pattern.events_dict[i]))

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ASCII"?>
+<tempsy:TemPsyBlock xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tempsy="http://www.svv.lu/offline/TemPsy">
+  <temPsyExpressions name="P37">
+    <scope xsi:type="tempsy:BiScope" scopeType="and">
+      <boundaryBegin>
+        <event name="a"/>
+        <timeDistance value="1000"/>
+      </boundaryBegin>
+      <boundaryEnd ordinal="2">
+        <event name="b"/>
+      </boundaryEnd>
+    </scope>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="c"/>
+      </block1>
+      <timeDistance value="1000"/>
+      <block2>
+        <event name="d"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+</tempsy:TemPsyBlock>

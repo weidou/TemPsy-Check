@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<tempsy:TemPsyBlock xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tempsy="http://www.svv.lu/offline/TemPsy">
+  <temPsyExpressions name="P35">
+    <scope xsi:type="tempsy:BiScope" scopeType="and">
+      <boundaryBegin>
+        <event name="a"/>
+      </boundaryBegin>
+      <boundaryEnd>
+        <event name="b"/>
+      </boundaryEnd>
+    </scope>
+    <pattern xsi:type="tempsy:OccurrencePattern" patternType="never" comparingOperator="exactly" times="2">
+      <event name="c"/>
+    </pattern>
+  </temPsyExpressions>
+</tempsy:TemPsyBlock>
