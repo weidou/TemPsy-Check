@@ -6,7 +6,7 @@ More information on TemPsy-Check is available in this technical report:
 
 > Wei Dou, Domenico Bianculli, and Lionel Briand. __A model-based approach to offline trace checking of temporal properties with OCL__. Technical Report TR-SnT-2014-5, SnT Centre - University of Luxembourg, March 2014.  Available online at http://hdl.handle.net/10993/16112
 
-*TemPsy* (__Tem__poral __P__roperty Made Ea__sy__) is a domain specific language based on [OCL](http://www.omg.org/spec/OCL) (Object Constraint Language) which allows users to express temporal properties using [property specification patterns](http://patterns.projects.cis.ksu.edu). *TemPsy* is a revised language of *OCLR*, which has been introduced in this paper:
+*TemPsy* (**Tem**poral **P**roperty Made Ea**sy**) is a domain specific language based on [OCL](http://www.omg.org/spec/OCL) (Object Constraint Language) which allows users to express temporal properties using [property specification patterns](http://patterns.projects.cis.ksu.edu). *TemPsy* is a revised language of *OCLR*, which has been introduced in this paper:
 
 > Wei Dou, Domenico Bianculli, and Lionel Briand. __OCLR: a more expressive, pattern-based temporal extension of OCL__. In Proceedings of the 2014 European Conference on Modelling Foundations and Applications (ECMFA 2014), York, United Kingdom, volume 8569 of Lecture Notes in Computer Science, pages 51-66. Springer, July 2014. Available online  at http://dx.doi.org/10.1007/978-3-319-09195-2_4
 
