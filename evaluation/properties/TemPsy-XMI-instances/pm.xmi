@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ASCII"?>
+<tempsy:TemPsyBlock xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tempsy="http://www.svv.lu/offline/TemPsy">
+  <temPsyExpressions name="P3">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OccurrencePattern" patternType="eventually" times="2">
+      <event name="a3"/>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P4">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OccurrencePattern" patternType="eventually" comparingOperator="at most" times="3">
+      <event name="a4"/>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P5">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="responding">
+      <block1>
+        <event name="a5"/>
+      </block1>
+      <timeDistance comparingOperator="at most" value="1000"/>
+      <block2>
+        <event name="b5"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P6">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="responding">
+      <block1>
+        <event name="a6"/>
+      </block1>
+      <timeDistance comparingOperator="exactly" value="1000"/>
+      <block2>
+        <event name="b6"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P7">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="a7"/>
+      </block1>
+      <timeDistance comparingOperator="at most" value="6000"/>
+      <block2>
+        <event name="b7"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P8">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="a8"/>
+      </block1>
+      <timeDistance value="100"/>
+      <block2>
+        <event name="b9"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P9">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="a9"/>
+      </block1>
+      <timeDistance comparingOperator="exactly" value="100"/>
+      <block2>
+        <event name="b9"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P10">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="preceding">
+      <block1>
+        <event name="a10"/>
+      </block1>
+      <block1>
+        <event name="b10"/>
+      </block1>
+      <timeDistance value="1000"/>
+      <block2>
+        <event name="c10"/>
+      </block2>
+      <block2>
+        <event name="d10"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P11">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="responding">
+      <block1>
+        <event name="a11"/>
+      </block1>
+      <timeDistance value="1000"/>
+      <block2>
+        <event name="b11"/>
+      </block2>
+      <block2>
+        <event name="c11"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+  <temPsyExpressions name="P12">
+    <scope xsi:type="tempsy:Globally"/>
+    <pattern xsi:type="tempsy:OrderPattern" patternType="responding">
+      <block1>
+        <event name="a12"/>
+      </block1>
+      <block2>
+        <event name="b12"/>
+      </block2>
+    </pattern>
+  </temPsyExpressions>
+</tempsy:TemPsyBlock>
